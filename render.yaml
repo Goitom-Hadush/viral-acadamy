@@ -4,8 +4,9 @@ services:
     runtime: php
     plan: free
     buildCommand: |
+      export NODE_OPTIONS=--max-old-space-size=512
       composer install --no-dev --optimize-autoloader
-      npm install --legacy-peer-deps
+      npm install --omit=dev --legacy-peer-deps --prefer-offline --no-audit --no-fund
       npm run build
     startCommand: php artisan serve --host 0.0.0.0 --port 10000
     envVars:
@@ -15,6 +16,8 @@ services:
         value: false
       - key: LOG_CHANNEL
         value: stderr
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=512
       - key: DATABASE_URL
         fromDatabase:
           name: viral-acadamy-db
