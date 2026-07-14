@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: viral-acadamy
+    runtime: php
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      npm install --legacy-peer-deps
+      npm run build
+    startCommand: php artisan serve --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DATABASE_URL
+        fromDatabase:
+          name: viral-acadamy-db
+          property: connectionString
+
+databases:
+  - name: viral-acadamy-db
+    databaseName: viral_acadamy
+    user: viral_acadamy
+    plan: free
