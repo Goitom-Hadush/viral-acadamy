@@ -1,5 +1,5 @@
 [phases.setup]
-  nixPkgs = ["...", "php", "php83Packages.composer", "nodejs", "npm"]
+  nixPkgs = ["...", "php", "php83Packages.composer", "nodejs"]
 
 [phases.install]
   dependsOn = ["setup"]
