@@ -20,7 +20,31 @@ Route::get('/robots.txt', function () {
 // Sitemap.xml
 Route::get('/sitemap.xml', function () {
     $courses = Course::where('status', 'published')->get();
-    return response()->view('sitemap', ['courses' => $courses], 200)->header('Content-Type', 'application/xml');
+
+    $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+    // Homepage
+    $xml .= '  <url>' . "\n";
+    $xml .= '    <loc>' . route('home') . '</loc>' . "\n";
+    $xml .= '    <lastmod>' . now()->toW3cString() . '</lastmod>' . "\n";
+    $xml .= '    <changefreq>weekly</changefreq>' . "\n";
+    $xml .= '    <priority>1.0</priority>' . "\n";
+    $xml .= '  </url>' . "\n";
+
+    // Course pages
+    foreach ($courses as $course) {
+        $xml .= '  <url>' . "\n";
+        $xml .= '    <loc>' . route('courses.show', $course->id) . '</loc>' . "\n";
+        $xml .= '    <lastmod>' . $course->updated_at->toW3cString() . '</lastmod>' . "\n";
+        $xml .= '    <changefreq>weekly</changefreq>' . "\n";
+        $xml .= '    <priority>0.8</priority>' . "\n";
+        $xml .= '  </url>' . "\n";
+    }
+
+    $xml .= '</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'application/xml');
 })->name('sitemap.xml');
 
 // ---------------------------------------------------------
@@ -29,10 +53,20 @@ Route::get('/sitemap.xml', function () {
 Route::get('/', function () {
     // Only fetch courses that are published, and grab the instructor info + video count
     $courses = Course::where('status', 'published')
-                     ->with('instructor')
+                     ->with(['instructor', 'category'])
                      ->withCount('videos')
                      ->orderBy('created_at', 'desc')
                      ->get();
+
+    // Build categories list with course counts (only categories that have published courses)
+    $categories = \App\Models\Category::whereHas('courses', function ($q) {
+                        $q->where('status', 'published');
+                    })
+                    ->withCount(['courses' => function ($q) {
+                        $q->where('status', 'published');
+                    }])
+                    ->orderBy('name')
+                    ->get();
 
     // Fetch the currently active homepage advertisement (if any) and respect optional scheduling
     // Guard against missing table (e.g., before running migrations) to avoid QueryException
@@ -56,12 +90,13 @@ Route::get('/', function () {
     }
 
     return Inertia::render('Welcome', [
-        'courses' => $courses,
+        'courses'       => $courses,
+        'categories'    => $categories,
         'advertisement' => $advertisement,
     ]);
 })->name('home');
 
-Route::get('/courses/{course}', [App\Http\Controllers\CourseViewController::class, 'show'])->name('courses.show');
+Route::get('/courses/{course}', [App\Http\Controllers\CourseViewController::class, 'show'])->name('courses.show')->middleware('auth');
 
 // Manual Payment Upload (Student)
 Route::post('/buy/{course}', [App\Http\Controllers\ManualPaymentController::class, 'uploadReceipt'])->name('manual.pay')->middleware('auth');
@@ -80,6 +115,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// ---------------------------------------------------------
+// 3. SHARED DASHBOARD ROUTE
+// ---------------------------------------------------------
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+
+        if ($user?->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        if ($user?->role === 'instructor') {
+            return redirect()->route('instructor.dashboard');
+        }
+
+        return redirect()->route('student.dashboard');
+    })->name('dashboard');
 });
 
 // ---------------------------------------------------------
@@ -105,9 +159,14 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
     // Course Management
     Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name('courses.index');
     Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name('courses.store');
+    Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name('courses.edit');
+    Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name('courses.update');
+    Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name('courses.destroy');
     Route::patch('/courses/{course}/publish', [App\Http\Controllers\Instructor\CourseController::class, 'togglePublish'])->name('courses.publish');
-    // Video upload route (we build this next)
+    // Video management
+    Route::get('/courses/{course}/videos', [App\Http\Controllers\Instructor\VideoController::class, 'index'])->name('videos.index');
     Route::post('/courses/{course}/videos', [App\Http\Controllers\Instructor\VideoController::class, 'store'])->name('videos.store');
+    Route::delete('/courses/{course}/videos/{video}', [App\Http\Controllers\Instructor\VideoController::class, 'destroy'])->name('videos.destroy');
     
     // Students Management
     Route::get('/students', [App\Http\Controllers\Instructor\StudentController::class, 'index'])->name('students');
@@ -118,76 +177,12 @@ Route::middleware(['auth', 'role:instructor'])->prefix('instructor')->name('inst
 });
 
 // ---------------------------------------------------------
-// TEST ROUTES (for debugging)
+// TEST ROUTES (for debugging) — REMOVED FOR PRODUCTION
 // ---------------------------------------------------------
-Route::get('/test-users', function () {
-    $users = \App\Models\User::orderBy('created_at', 'desc')->get();
-    return response()->json(['users' => $users, 'count' => count($users)]);
-});
-
-Route::get('/test-categories', function () {
-    $categories = \App\Models\Category::orderBy('name', 'asc')->get();
-    return response()->json(['categories' => $categories, 'count' => count($categories)]);
-});
-
-Route::get('/test-courses', function () {
-    $courses = \App\Models\Course::with(['instructor', 'category'])->withCount('videos')->orderBy('created_at', 'desc')->get();
-    return response()->json(['courses' => $courses, 'count' => count($courses)]);
-});
-
-Route::get('/test-dashboard', function () {
-    $totalStudents = \App\Models\User::where('role', 'student')->count();
-    $totalCourses = \App\Models\Course::count();
-    $totalRevenue = \App\Models\Payment::where('status', 'success')->sum('amount');
-    $averagePrice = \App\Models\Course::avg('price') ?? 0;
-    
-    $courses = \App\Models\Course::withCount(['purchases as students_count' => function ($query) {
-                $query->where('status', 'paid');
-            }])
-            ->withSum(['payments as revenue' => function ($query) {
-                $query->where('status', 'success');
-            }], 'amount')
-            ->get(['id', 'title', 'price', 'thumbnail'])
-            ->sortByDesc('students_count')
-            ->take(10)
-            ->values()
-            ->map(function ($course) {
-                return [
-                    'id' => $course->id,
-                    'title' => $course->title,
-                    'price' => $course->price,
-                    'thumbnail' => $course->thumbnail,
-                    'students_count' => $course->students_count,
-                    'revenue' => $course->revenue ?? 0,
-                ];
-            });
-
-    $recentPayments = \App\Models\Payment::with(['user:id,name,email', 'course:id,title'])
-        ->where('status', 'success')
-        ->latest()
-        ->take(8)
-        ->get()
-        ->map(function ($payment) {
-            return [
-                'id' => $payment->id,
-                'amount' => $payment->amount,
-                'student_name' => $payment->user->name ?? 'Unknown',
-                'course_title' => $payment->course->title ?? 'Unknown',
-                'created_at' => $payment->created_at->diffForHumans(),
-            ];
-        });
-
-    return response()->json([
-        'stats' => [
-            'students' => $totalStudents,
-            'courses' => $totalCourses,
-            'revenue' => $totalRevenue,
-            'average_price' => round($averagePrice, 2),
-        ],
-        'courses' => $courses,
-        'recentPayments' => $recentPayments,
-    ]);
-});
+// Route::get('/test-users', ...);     // removed
+// Route::get('/test-categories', ...); // removed
+// Route::get('/test-courses', ...);    // removed
+// Route::get('/test-dashboard', ...);  // removed
 
 // ---------------------------------------------------------
 // 5. ADMIN ROUTES
@@ -205,6 +200,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/advertisement/{advertisement}', [App\Http\Controllers\Admin\AdvertisementController::class, 'destroy'])->name('advertisement.destroy');
     
     Route::get('/courses', [App\Http\Controllers\Admin\CourseController::class, 'index'])->name('courses.index');
+    Route::get('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'show'])->name('courses.show');
     Route::delete('/courses/{course}', [App\Http\Controllers\Admin\CourseController::class, 'destroy'])->name('courses.destroy');
     Route::delete('/videos/{video}', [App\Http\Controllers\Admin\VideoController::class, 'destroy'])->name('videos.destroy');
     Route::delete('/reviews/{review}', [App\Http\Controllers\Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -216,7 +212,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 // ---------------------------------------------------------
 // 6. SECURE VIDEO STREAM ROUTE
-// Used by the React Video Player (Must be logged in, role checked inside controller)
+// Must be inside auth middleware so session is available for cookie-based auth
 // ---------------------------------------------------------
 Route::get('/stream/{video}', [App\Http\Controllers\VideoStreamController::class, 'stream'])
+    ->middleware('auth')
     ->name('video.stream');
