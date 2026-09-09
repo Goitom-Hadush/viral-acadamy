@@ -299,4 +299,85 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['message' => 'Progress synced.']);
     });
+
+    // ── Payment (Manual Receipt Upload) ───────────────────────────────────────
+
+    // GET /api/payment-info — static bank account details shown before upload
+    Route::get('/payment-info', function () {
+        return response()->json([
+            'accounts' => [
+                [
+                    'bank'           => 'Commercial Bank of Ethiopia (CBE)',
+                    'account_number' => '1000547380081',
+                    'account_name'   => 'Viral Academy',
+                ],
+                [
+                    'bank'           => 'Telebirr',
+                    'account_number' => '0912345678',
+                    'account_name'   => 'Viral Academy',
+                ],
+            ],
+            'instructions' => 'Transfer the exact course amount to one of the accounts above, then upload your receipt photo below.',
+        ]);
+    });
+
+    // POST /api/courses/{id}/pay — upload receipt image (multipart/form-data)
+    Route::post('/courses/{course}/pay', function (Request $request, Course $course) {
+        $request->validate([
+            'receipt' => 'required|file|mimes:jpeg,png,jpg|max:4096',
+        ]);
+
+        $user = $request->user();
+
+        // Prevent duplicate pending payments
+        $existing = \App\Models\Payment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->whereIn('status', ['pending', 'success'])
+            ->first();
+
+        if ($existing && $existing->status === 'success') {
+            return response()->json(['message' => 'Already enrolled.'], 409);
+        }
+
+        $filePath = $request->file('receipt')->store('receipts', 'public');
+
+        $payment = \App\Models\Payment::updateOrCreate(
+            ['user_id' => $user->id, 'course_id' => $course->id],
+            [
+                'transaction_id' => 'MOBILE_' . \Illuminate\Support\Str::uuid(),
+                'amount'         => $course->price,
+                'payment_method' => 'manual_transfer',
+                'status'         => 'pending',
+                'receipt_image'  => $filePath,
+            ]
+        );
+
+        return response()->json([
+            'message'    => 'Receipt uploaded. Waiting for admin verification.',
+            'payment_id' => $payment->id,
+            'status'     => 'pending',
+        ]);
+    });
+
+    // GET /api/courses/{id}/payment-status — poll for approval
+    Route::get('/courses/{course}/payment-status', function (Request $request, Course $course) {
+        $user    = $request->user();
+        $payment = \App\Models\Payment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->latest()
+            ->first();
+
+        if (! $payment) {
+            return response()->json(['status' => 'none']);
+        }
+
+        $isEnrolled = $user->purchasedCourses()
+            ->where('courses.id', $course->id)
+            ->exists();
+
+        return response()->json([
+            'status'      => $payment->status, // pending | success | failed
+            'is_enrolled' => $isEnrolled,
+        ]);
+    });
 });
