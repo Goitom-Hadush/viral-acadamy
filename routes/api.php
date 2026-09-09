@@ -210,9 +210,14 @@ Route::middleware('auth:sanctum')->group(function () {
             ->purchasedCourses()
             ->with(['instructor:id,name', 'category:id,name'])
             ->withCount('videos')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->get()
             ->map(fn ($c) => array_merge($c->toArray(), [
-                'is_purchased' => true,
+                'is_purchased'  => true,
+                'videos_count'  => $c->videos_count,
+                'rating'        => $c->reviews_avg_rating,
+                'reviews_count' => $c->reviews_count,
             ]));
 
         return response()->json(['data' => $courses]);
