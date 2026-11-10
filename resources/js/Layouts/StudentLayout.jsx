@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export default function StudentLayout({ children }) {
     const { props, url } = usePage();
-    const { auth = { user: { name: 'Student' } } } = props;
+    const { auth = { user: { name: 'Student' } }, flash } = props;
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const navigation = useMemo(() => ([
         {
@@ -198,6 +198,30 @@ export default function StudentLayout({ children }) {
 
                 {/* Main Content Area */}
                 <main className="flex-1 overflow-x-hidden p-4 sm:p-6 lg:p-8">
+                    {flash?.success && (
+                        <div className="mb-6 flex items-start justify-between rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 shadow-sm animate-fade-in">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 flex-shrink-0">
+                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <p className="font-semibold text-sm">{flash.success}</p>
+                            </div>
+                        </div>
+                    )}
+                    {flash?.error && (
+                        <div className="mb-6 flex items-start justify-between rounded-2xl border border-rose-200 bg-rose-50 p-4 text-rose-800 shadow-sm animate-fade-in">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-rose-100 text-rose-700 flex-shrink-0">
+                                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </div>
+                                <p className="font-semibold text-sm">{flash.error}</p>
+                            </div>
+                        </div>
+                    )}
                     {children}
                 </main>
             </div>

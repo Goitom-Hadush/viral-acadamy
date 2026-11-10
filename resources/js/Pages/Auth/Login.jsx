@@ -5,9 +5,14 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function Login({ status, canResetPassword }) {
+    const { props } = usePage();
+    const flash = props.flash || {};
+    const successMessage = status || flash.success;
+    const errorMessage = flash.error;
+
     const { data, setData, post, processing, errors, reset } = useForm({
         login: '',
         password: '',
@@ -43,9 +48,21 @@ export default function Login({ status, canResetPassword }) {
                 </p>
             </div>
 
-            {status && (
-                <div className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-                    {status}
+            {successMessage && (
+                <div className="mb-4 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-800">
+                    <svg className="h-5 w-5 text-emerald-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>{successMessage}</div>
+                </div>
+            )}
+
+            {(errorMessage || errors.general) && (
+                <div className="mb-4 flex items-start gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-800">
+                    <svg className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>{errorMessage || errors.general}</div>
                 </div>
             )}
 
@@ -64,7 +81,7 @@ export default function Login({ status, canResetPassword }) {
                         onChange={(e) => setData('login', e.target.value)}
                     />
 
-                    <InputError message={errors.login} className="mt-2" />
+                    <InputError message={errors.login || errors.email} className="mt-2" />
                 </div>
 
                 <div>

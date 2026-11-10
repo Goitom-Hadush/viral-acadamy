@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'name' => 'Viral Admin',
             'email' => 'admin@nati.com',
+            'phone' => '0911000001',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'status' => 'active'
@@ -45,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $instructor = User::create([
             'name' => 'Goitom Hadush',
             'email' => 'instructor@nati.com',
+            'phone' => '0911000002',
             'password' => Hash::make('password'),
             'role' => 'instructor',
             'status' => 'active'
@@ -53,6 +55,7 @@ class DatabaseSeeder extends Seeder
         $student = User::create([
             'name' => 'Abebe Kebede',
             'email' => 'student@nati.com',
+            'phone' => '0911000003',
             'password' => Hash::make('password'),
             'role' => 'student',
             'status' => 'active'
