@@ -105,6 +105,8 @@ export default function Welcome({ courses = [], categories = [], advertisement =
     const videoRef = useRef(null);
     const [muted, setMuted] = useState(false);
     const [showUnmute, setShowUnmute] = useState(false);
+    // Mobile only: the promo caption slides in 3 seconds after the promo video appears.
+    const [promoCaption, setPromoCaption] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [openFaq, setOpenFaq] = useState(null);
@@ -325,6 +327,13 @@ export default function Welcome({ courses = [], categories = [], advertisement =
 
         tryPlay();
     }, [advertisement]);
+
+    useEffect(() => {
+        setPromoCaption(false);
+        if (!advertisement) return undefined;
+        const timer = setTimeout(() => setPromoCaption(true), 3000);
+        return () => clearTimeout(timer);
+    }, [advertisement?.id, advertisement?.video_path]);
 
     const filteredCourses = useMemo(() => {
         return courses.filter((course) => {
@@ -680,6 +689,41 @@ export default function Welcome({ courses = [], categories = [], advertisement =
                                 </div>
 
                             </div>
+
+                            {/* Mobile only: caption that glides out from under the promo video after 3 seconds */}
+                            {advertisement && (
+                                <div
+                                    aria-live="polite"
+                                    className={`grid transition-[grid-template-rows,opacity] duration-700 ease-out motion-reduce:transition-none sm:hidden ${promoCaption ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                                >
+                                    <div className="overflow-hidden">
+                                        <div className="relative mt-1 overflow-hidden rounded-2xl border border-[#e4c36a]/30 bg-gradient-to-br from-[#06240c]/95 to-[#0b3a17]/95 px-4 py-4 text-center shadow-xl">
+                                            <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#e4c36a]/15 blur-2xl" />
+                                            <h2 className="home-display text-[1.35rem] leading-snug text-white">
+                                                {[
+                                                    t('home.promo_line_1', 'Transform Your Mindset.'),
+                                                    t('home.promo_line_2', 'Architect Real Wealth.'),
+                                                    t('home.promo_line_3', 'Lead With Authority.'),
+                                                ].map((line, i) => (
+                                                    <span
+                                                        key={i}
+                                                        style={{ transitionDelay: promoCaption ? `${350 + i * 250}ms` : '0ms' }}
+                                                        className={`block transition-all duration-700 ease-out motion-reduce:transition-none ${promoCaption ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'} ${i === 2 ? 'bg-gradient-to-r from-[#f6e7b4] to-[#e4c36a] bg-clip-text text-transparent' : ''}`}
+                                                    >
+                                                        {line}
+                                                    </span>
+                                                ))}
+                                            </h2>
+                                            <p
+                                                style={{ transitionDelay: promoCaption ? '1100ms' : '0ms' }}
+                                                className={`mt-3 text-[13px] leading-6 text-emerald-50/80 transition-all duration-700 ease-out motion-reduce:transition-none ${promoCaption ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'}`}
+                                            >
+                                                {t('home.promo_text', 'Success Life Coaching empowers professionals, executives, and entrepreneurs with world-class coaching programs, in-person summits, and high-income masterclasses.')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-/// Models for the public website pages served by Api\ContentController.
+// Models for the public website pages served by Api\ContentController.
 
 String? _str(dynamic v) {
   if (v == null) return null;

@@ -234,7 +234,7 @@ class _HeaderLangChip extends StatelessWidget {
       tooltip: 'Change Language / ቋንቋ ቀይር',
       position: PopupMenuPosition.under,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         side: const BorderSide(color: Tw.copper200),
       ),
       color: Colors.white,
@@ -245,45 +245,72 @@ class _HeaderLangChip extends StatelessWidget {
             value: l.code,
             child: Row(
               children: [
-                Text(l.flag, style: const TextStyle(fontSize: 16)),
+                Container(
+                  width: 32,
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: l.code == lang.languageCode
+                        ? Tw.copper700
+                        : Tw.copper50,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(l.flag, style: const TextStyle(fontSize: 15)),
+                ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    l.label,
-                    style: TwText.sans(
-                      13,
-                      weight: l.code == lang.languageCode
-                          ? FontWeight.w700
-                          : FontWeight.w500,
-                      color: l.code == lang.languageCode
-                          ? Tw.copper700
-                          : Tw.slate700,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l.label,
+                        style: TwText.sans(
+                          13,
+                          weight: l.code == lang.languageCode
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: l.code == lang.languageCode
+                              ? Tw.copper700
+                              : Tw.slate700,
+                        ),
+                      ),
+                      Text(
+                        l.hint,
+                        style: TwText.sans(10.5, color: Tw.slate400),
+                      ),
+                    ],
                   ),
                 ),
                 if (l.code == lang.languageCode)
-                  const Icon(Icons.check, size: 16, color: Tw.copper700),
+                  const Icon(Icons.check_circle_rounded,
+                      size: 18, color: Tw.copper700),
               ],
             ),
           ),
       ],
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: Tw.copper50.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(12),
+          gradient: const LinearGradient(
+            colors: [Tw.copper50, Color(0xFFE8F5E9)],
+          ),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: Tw.copper200),
+          boxShadow: Tw.sm,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(active.flag, style: const TextStyle(fontSize: 14)),
-            const SizedBox(width: 4),
+            Text(active.flag, style: const TextStyle(fontSize: 15)),
+            const SizedBox(width: 5),
             Text(
-              active.label.length > 5 ? active.label.substring(0, 3) : active.label,
-              style: TwText.sans(11.5, weight: FontWeight.w700, color: Tw.copper800),
+              active.code.toUpperCase(),
+              style:
+                  TwText.sans(12, weight: FontWeight.w800, color: Tw.copper800),
             ),
-            const Icon(Icons.arrow_drop_down, size: 14, color: Tw.copper800),
+            const SizedBox(width: 2),
+            const Icon(Icons.arrow_drop_down, size: 16, color: Tw.copper700),
           ],
         ),
       ),
@@ -767,43 +794,69 @@ class _LanguageBox extends StatelessWidget {
     final provider = context.watch<LanguageProvider>();
 
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Tw.copper50.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Tw.copper200.withValues(alpha: 0.8)),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Tw.copper200.withValues(alpha: 0.6)),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFF6FAF7), Colors.white],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Tw.copper700.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+            spreadRadius: -4,
+          ),
+        ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 8),
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Tw.copper700, Tw.copper800],
+              ),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(19)),
+            ),
             child: Row(
               children: [
+                const Text('🌐', style: TextStyle(fontSize: 16)),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                      '🌐 ${context.tr('lang.label').toUpperCase()} / ቋንቋ',
-                      style:
-                          TwText.eyebrow(11, Tw.copper800, trackingEm: 0.05)),
+                    '${context.tr('lang.label')} / ቋንቋ',
+                    style: TwText.sans(13,
+                        weight: FontWeight.w700, color: Colors.white),
+                  ),
                 ),
-                Text('Tigrigna • Amharic • English',
-                    style: TwText.sans(10, color: Tw.slate400)),
+                Text('ትግርኛ · አማርኛ · EN',
+                    style: TwText.sans(10,
+                        color: Colors.white.withValues(alpha: 0.6))),
               ],
             ),
           ),
-          Row(
-            children: [
-              for (final lang in appLanguages) ...[
-                Expanded(
-                  child: _LangButton(
-                    lang: lang,
-                    active: provider.languageCode == lang.code,
-                    onTap: () => provider.setLanguage(lang.code),
+          // Language buttons
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                for (final lang in appLanguages) ...[
+                  Expanded(
+                    child: _LangButton(
+                      lang: lang,
+                      active: provider.languageCode == lang.code,
+                      onTap: () => provider.setLanguage(lang.code),
+                    ),
                   ),
-                ),
-                if (lang != appLanguages.last) const SizedBox(width: 6),
+                  if (lang != appLanguages.last) const SizedBox(width: 8),
+                ],
               ],
-            ],
+            ),
           ),
         ],
       ),
@@ -826,30 +879,62 @@ class _LangButton extends StatelessWidget {
       label: lang.hint,
       child: Material(
         color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Ink(
-            height: 44,
+          borderRadius: BorderRadius.circular(14),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 68,
             decoration: BoxDecoration(
               gradient: active ? Tw.brandDeepGradient : null,
               color: active ? null : Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: active ? null : Border.all(color: Tw.slate200),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: active
+                    ? Tw.gold2.withValues(alpha: 0.5)
+                    : Tw.slate200,
+                width: active ? 1.5 : 1,
+              ),
+              boxShadow: active
+                  ? [
+                      BoxShadow(
+                        color: Tw.copper700.withValues(alpha: 0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                        spreadRadius: -2,
+                      )
+                    ]
+                  : null,
             ),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(lang.flag, style: const TextStyle(fontSize: 13)),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    lang.label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TwText.sans(12,
-                        weight: FontWeight.w700,
-                        color: active ? Colors.white : Tw.slate700),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(lang.flag, style: const TextStyle(fontSize: 16)),
+                    if (active) ...[
+                      const SizedBox(width: 4),
+                      const Icon(Icons.check_circle_rounded,
+                          size: 13, color: Tw.gold2),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  lang.label,
+                  overflow: TextOverflow.ellipsis,
+                  style: TwText.sans(12,
+                      weight: FontWeight.w700,
+                      color: active ? Colors.white : Tw.slate700),
+                ),
+                Text(
+                  lang.hint,
+                  style: TwText.sans(9.5,
+                      color: active
+                          ? Colors.white.withValues(alpha: 0.6)
+                          : Tw.slate400),
                 ),
               ],
             ),

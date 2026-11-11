@@ -97,7 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (lower.contains('mind') || lower.contains('habit')) return '🧠';
     if (lower.contains('lead') || lower.contains('exec')) return '💼';
     if (lower.contains('career') || lower.contains('job')) return '🚀';
-    if (lower.contains('money') || lower.contains('income') || lower.contains('wealth')) return '📈';
+    if (lower.contains('money') ||
+        lower.contains('income') ||
+        lower.contains('wealth')) {
+      return '📈';
+    }
     if (lower.contains('comm') || lower.contains('speak')) return '🗣️';
     return '📚';
   }
@@ -129,11 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          eyebrow: 'Academy catalog',
-          title: 'Featured coaching programs',
-          subtitle:
-              'High-impact video programs with lessons you can use the same day.',
+        SectionHeader(
+          eyebrow: context.tr('courses.section_eyebrow'),
+          title: context.tr('courses.section_title'),
+          subtitle: context.tr('courses.section_sub'),
         ),
         const SizedBox(height: 20),
         // Search pill
@@ -142,8 +145,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onChanged: (v) => setState(() => _query = v),
           style: TwText.sans(14, color: Tw.slate800),
           decoration: InputDecoration(
-            hintText:
-                context.t('home.search_placeholder', 'Search programs, topics, coaches...'),
+            hintText: context.t('home.search_placeholder',
+                'Search programs, topics, coaches...'),
             hintStyle: TwText.sans(14, color: Tw.slate400),
             filled: true,
             fillColor: Colors.white,
@@ -223,16 +226,16 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Text('📚', style: TextStyle(fontSize: 40)),
                 const SizedBox(height: 12),
-                Text('No programs match your search',
+                Text(context.tr('no_match_title'),
                     textAlign: TextAlign.center,
                     style: TwText.sans(16, weight: FontWeight.w700)),
                 const SizedBox(height: 6),
-                Text('Try adjusting your keyword or switch category filters.',
+                Text(context.tr('no_match_sub'),
                     textAlign: TextAlign.center,
                     style: TwText.sans(13, color: Tw.slate500)),
                 const SizedBox(height: 16),
                 SecondaryButton(
-                  label: 'Reset Filters',
+                  label: context.tr('reset_filters'),
                   expand: false,
                   onPressed: () => setState(() {
                     _search.clear();
@@ -265,31 +268,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final faqs = [
           (
-            'How do I access my coaching courses after payment?',
+            context.tr('faq.how_access.q'),
             'Once you transfer the course tuition via $bank ($account) or Telebirr ($tele) and upload your payment receipt screenshot, our system approves your enrollment and unlocks immediate 6-month access to all lessons in your student dashboard.'
           ),
           (
-            'Can I watch lessons on my mobile phone?',
-            'Yes! The entire platform is built mobile-first for Ethiopia. You can stream seamlessly on mobile browsers with data-optimized video playback, or download our official Android app directly.'
+            context.tr('faq.mobile.q'),
+            context.tr('faq.mobile.a'),
           ),
           (
-            'How long do I get access to the courses I purchase?',
-            'All course enrollments include full 6-month streaming access from the moment of purchase approval. You can watch anytime, learn at your own pace, and re-watch key lessons.'
+            context.tr('faq.duration.q'),
+            context.tr('faq.duration.a'),
           ),
           (
-            'Do I receive a certificate of completion?',
-            'Yes! Upon completing all lessons in a course, you will be issued a verified Success Life Coaching completion certificate to showcase on your CV, portfolio, or LinkedIn.'
+            context.tr('faq.cert.q'),
+            context.tr('faq.cert.a'),
           ),
           (
-            'How do I download the Android app?',
-            'Tap the "Android" button on the banner at the top of the homepage or use the download link in the footer to get the official APK directly onto your phone.'
+            context.tr('faq.app.q'),
+            context.tr('faq.app.a'),
           ),
         ];
 
         return Column(
           children: [
             SectionHeader(
-              eyebrow: 'Questions',
+              eyebrow: context.tr('faq.eyebrow'),
               title: context.t('home.faq_title', 'Frequently Asked Questions'),
               subtitle:
                   'Everything you need to know about getting started and studying with us.',
@@ -356,7 +359,8 @@ class _QuickResumeBanner extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Tw.gold2.withValues(alpha: 0.4)),
                   ),
-                  child: const Icon(Icons.play_arrow_rounded, color: Tw.gold2, size: 28),
+                  child: const Icon(Icons.play_arrow_rounded,
+                      color: Tw.gold2, size: 28),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
@@ -366,18 +370,20 @@ class _QuickResumeBanner extends StatelessWidget {
                     children: [
                       Text(
                         'CONTINUE LEARNING',
-                        style: TwText.eyebrow(9.5, Tw.goldLight, trackingEm: 0.15),
+                        style:
+                            TwText.eyebrow(9.5, Tw.goldLight, trackingEm: 0.15),
                       ),
                       const SizedBox(height: 3),
                       Text(
                         first.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TwText.sans(14, weight: FontWeight.w700, color: Colors.white),
+                        style: TwText.sans(14,
+                            weight: FontWeight.w700, color: Colors.white),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${first.lessonsCount} lessons • Pick up where you left off',
+                        '${first.lessonsCount} ${context.tr('lessons_count')} ${context.tr('pick_up_where')}',
                         style: TwText.sans(11.5, color: Colors.white70),
                       ),
                     ],
@@ -389,11 +395,13 @@ class _QuickResumeBanner extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Tw.gold2,
                     foregroundColor: Tw.slate950,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     textStyle: TwText.sans(12, weight: FontWeight.w800),
                   ),
-                  child: const Text('Resume →'),
+                  child: Text(context.tr('resume')),
                 ),
               ],
             ),
@@ -647,10 +655,10 @@ class _Hero extends StatelessWidget {
                   top: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
             ),
             child: Row(
-              children: const [
-                _HeroStat('4.9', 'Student rating'),
-                _HeroStat('1,200+', 'Graduates'),
-                _HeroStat('6 mo', 'Full access'),
+              children: [
+                _HeroStat('4.9', context.tr('stat.rating')),
+                _HeroStat('1,200+', context.tr('stat.graduates')),
+                _HeroStat('6 mo', context.tr('stat.access')),
               ],
             ),
           ),
@@ -730,7 +738,7 @@ class _FeaturedMasterclass extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text('FEATURED MASTERCLASS',
+                  child: Text(context.tr('featured_masterclass'),
                       style:
                           TwText.eyebrow(10, Colors.white, trackingEm: 0.12)),
                 ),
@@ -750,11 +758,11 @@ class _FeaturedMasterclass extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Text('Empowering Leaders & Creators',
+            Text(context.tr('featured_title'),
                 style: TwText.display(20, color: Colors.white, height: 1.3)),
             const SizedBox(height: 8),
             Text(
-              "Master personal discipline, earn online income, and build lasting success with Ethiopia's premier coaching team.",
+              context.tr('featured_desc'),
               style: TwText.sans(13,
                   color: Colors.white.withValues(alpha: 0.8), height: 1.6),
             ),
@@ -763,10 +771,10 @@ class _FeaturedMasterclass extends StatelessWidget {
               spacing: 16,
               runSpacing: 6,
               children: [
-                Text('✓ Instant CBE & Telebirr',
+                Text(context.tr('featured_cbe'),
                     style: TwText.sans(12,
                         weight: FontWeight.w600, color: Tw.cream)),
-                Text('✓ 100% Lifetime Access',
+                Text(context.tr('featured_access'),
                     style: TwText.sans(12,
                         weight: FontWeight.w600, color: Tw.cream)),
               ],
@@ -816,9 +824,8 @@ class _ValuePillars extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          eyebrow: 'The academy advantage',
-          title:
-              context.t('home.why_choose', 'Why ambitious people learn here'),
+          eyebrow: context.tr('pillars.eyebrow'),
+          title: context.t('home.why_choose', 'Why ambitious people learn here'),
           subtitle:
               'Practical coaching, local payments, and lessons built for professionals across Ethiopia.',
         ),
@@ -916,9 +923,9 @@ class _HowItWorks extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SectionHeader(
-              eyebrow: 'Three calm steps',
-              title: 'From payment to a verified certificate'),
+          SectionHeader(
+              eyebrow: context.tr('how.eyebrow'),
+              title: context.tr('how.title')),
           const SizedBox(height: 24),
           for (final s in steps) ...[
             Container(
@@ -1048,11 +1055,10 @@ class _Testimonials extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(
-          eyebrow: 'Student stories',
-          title: 'Loved by learners across Ethiopia',
-          subtitle:
-              'Graduates who changed their confidence, career, and income.',
+        SectionHeader(
+          eyebrow: context.tr('testimonials.eyebrow'),
+          title: context.tr('testimonials.title'),
+          subtitle: context.tr('testimonials.sub'),
         ),
         const SizedBox(height: 24),
         for (final t in defaultTestimonials) ...[
@@ -1169,23 +1175,23 @@ class _FinalCta extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
       child: Column(
         children: [
-          Text('BEGIN YOUR TRANSFORMATION',
+          Text(context.tr('cta.begin_transformation'),
               textAlign: TextAlign.center,
               style: TwText.eyebrow(11, Tw.cream, trackingEm: 0.24)),
           const SizedBox(height: 12),
-          Text('Ready to build real success and unlock your potential?',
+          Text(context.tr('cta.ready_title'),
               textAlign: TextAlign.center,
               style: TwText.display(28, color: Colors.white, height: 1.25)),
           const SizedBox(height: 14),
           Text(
-            'Join graduates across Ethiopia who are mastering high-income skills and a stronger executive mindset.',
+            context.tr('cta.ready_sub'),
             textAlign: TextAlign.center,
             style: TwText.sans(14,
                 color: Tw.emerald50.withValues(alpha: 0.75), height: 1.7),
           ),
           const SizedBox(height: 28),
           GoldPillButton(
-              label: 'Get started free →',
+              label: context.tr('cta.get_started'),
               onPressed: () => context.push('/register')),
           const SizedBox(height: 12),
           GhostPillButton(
@@ -1229,19 +1235,19 @@ class SiteFooter extends StatelessWidget {
           const BrandLockup(logo: 48),
           const SizedBox(height: 14),
           Text(
-            "Ethiopia's premier coaching and online learning platform. Empowering ambitious individuals with transformative mindset, leadership, and income-generating skills.",
+            context.tr('footer.about_text'),
             style: TwText.sans(12.5, color: Tw.slate600, height: 1.65),
           ),
           const SizedBox(height: 24),
-          Text('PLATFORM NAVIGATION',
+          Text(context.tr('footer.platform_nav'),
               style: TwText.eyebrow(12, Tw.slate900, trackingEm: 0.05)),
           const SizedBox(height: 8),
           link(context.tr('nav.home'), '/home'),
-          link('About Success Life', '/about'),
-          link('Courses & Masterclasses', '/courses'),
-          link('🏛️ Live Seminars & Summits', '/seminars', highlight: true),
-          link('Video Reels', '/reels'),
-          link('Student Testimonials', '/testimonials'),
+          link(context.tr('footer.about'), '/about'),
+          link(context.tr('footer.courses_link'), '/courses'),
+          link(context.tr('footer.seminars_link'), '/seminars', highlight: true),
+          link(context.tr('footer.reels_link'), '/reels'),
+          link(context.tr('footer.testimonials_link'), '/testimonials'),
           const SizedBox(height: 20),
           const Divider(color: Tw.copper100),
           const SizedBox(height: 12),
@@ -1258,7 +1264,8 @@ class SiteFooter extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              Text('Developed by ', style: TwText.sans(12, color: Tw.slate500)),
+              Text('${context.tr('footer.developed_by')} ',
+                  style: TwText.sans(12, color: Tw.slate500)),
               Text('Goitom Hadush',
                   style: TwText.sans(12,
                       weight: FontWeight.w700, color: Tw.slate900)),

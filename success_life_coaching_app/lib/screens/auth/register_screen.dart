@@ -40,9 +40,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
-    // Quick check before calling the server; everything else is validated there.
     if (_password.text != _confirm.text) {
-      setState(() => _localError = 'Passwords do not match.');
+      setState(() => _localError = context.tr('register.passwords_mismatch'));
       return;
     }
     setState(() => _localError = null);
@@ -68,11 +67,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AuthHeading(
-              eyebrow: 'Create account',
-              title: 'Start your personal growth journey',
-              subtitle:
-                  'Join Success Life Coaching to unlock premium masterclasses, track milestones, and access your personal dashboard.',
+            AuthHeading(
+              eyebrow: context.tr('register.create_account'),
+              title: context.tr('register.journey_title'),
+              subtitle: context.tr('register.journey_desc'),
             ),
             if (error != null) ...[
               const SizedBox(height: 20),
@@ -82,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             AuthField(
               label: context.t('form.full_name', 'Full Name'),
               icon: Icons.person_outline,
-              hint: 'Your full name',
+              hint: context.tr('form.full_name'),
               controller: _name,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
@@ -112,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             AuthField(
               label: context.t('form.password', 'Password'),
               icon: Icons.lock_outline,
-              hint: 'At least 8 characters',
+              hint: context.t('form.password_hint', 'At least 8 characters'),
               controller: _password,
               obscure: true,
               textInputAction: TextInputAction.next,
@@ -120,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 16),
             AuthField(
-              label: 'Re-enter your password',
+              label: context.tr('register.reenter_password'),
               icon: Icons.lock_outline,
               hint: '••••••••',
               controller: _confirm,
@@ -130,7 +128,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 24),
             AuthSubmitButton(
-              label: auth.isLoading ? 'Creating account…' : 'Create account',
+              label: auth.isLoading
+                  ? context.tr('register.creating')
+                  : context.tr('register.create_account'),
               loading: auth.isLoading,
               onPressed: _submit,
             ),
@@ -139,13 +139,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text('Already a member? ',
+                Text(context.tr('register.already_member'),
                     style: TwText.sans(14, color: Tw.slate500)),
                 InkWell(
                   onTap: () => context.pushReplacement('/login'),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Text('Sign in instead',
+                    child: Text(context.tr('register.sign_in_instead'),
                         style: TwText.sans(14,
                             weight: FontWeight.w700, color: Tw.copper700)),
                   ),

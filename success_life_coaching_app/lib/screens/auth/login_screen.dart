@@ -11,7 +11,7 @@ import 'package:success_life_coaching_app/widgets/ui.dart';
 
 /// Mirrors resources/js/Pages/Auth/Login.jsx.
 class LoginScreen extends StatefulWidget {
-  /// Where to return after login (e.g. the course the user was viewing).
+  /// Where to return after login (e.g. the course the user was viewing)
   final String? from;
   const LoginScreen({super.key, this.from});
 
@@ -40,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
     final auth = context.read<AuthProvider>();
-    // Empty fields are validated by the server, which returns a friendly message.
     await auth.login(_login.text, _password.text);
     if (!mounted || !auth.isLoggedIn) return;
     final from = widget.from;
@@ -48,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _forgotPassword() async {
-    // Password reset happens on the website (email / SMS flow).
     final api = Uri.parse(ApiConfig.baseUrl);
     final url = api.replace(path: '/forgot-password');
     await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -64,11 +62,10 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const AuthHeading(
-              eyebrow: 'Welcome back',
-              title: 'Log in to continue learning',
-              subtitle:
-                  'Access your coaching programs, lessons, and progress from your personal dashboard.',
+            AuthHeading(
+              eyebrow: context.tr('login.welcome_back'),
+              title: context.tr('login.subtitle'),
+              subtitle: context.tr('login.desc'),
             ),
             if (auth.error != null) ...[
               const SizedBox(height: 20),
@@ -76,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
             const SizedBox(height: 28),
             AuthField(
-              label: 'Email or Phone Number',
+              label: context.tr('login.email_or_phone'),
               icon: Icons.person_outline,
               hint: 'you@example.com',
               controller: _login,
@@ -102,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: _forgotPassword,
-                child: Text('Forgot your password?',
+                child: Text(context.tr('login.forgot_password'),
                     style: TwText.sans(14,
                         weight: FontWeight.w600, color: Tw.copper600)),
               ),
@@ -110,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 8),
             AuthSubmitButton(
               label: auth.isLoading
-                  ? 'Signing in…'
+                  ? context.tr('login.signing_in')
                   : context.t('auth.login', 'Log in'),
               loading: auth.isLoading,
               onPressed: _submit,
@@ -120,13 +117,13 @@ class _LoginScreenState extends State<LoginScreen> {
               alignment: WrapAlignment.center,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Text('New to Success Life Coaching? ',
+                Text(context.tr('login.new_user'),
                     style: TwText.sans(14, color: Tw.slate500)),
                 InkWell(
                   onTap: () => context.pushReplacement('/register'),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Text('Create a free account',
+                    child: Text(context.tr('login.create_free'),
                         style: TwText.sans(14,
                             weight: FontWeight.w700, color: Tw.copper700)),
                   ),
@@ -156,12 +153,12 @@ class _TrustRow extends StatelessWidget {
         Row(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.shield_outlined, size: 16, color: Tw.slate400),
           const SizedBox(width: 4),
-          Text('Secure login', style: style),
+          Text(context.tr('trust.secure_login'), style: style),
         ]),
         Row(mainAxisSize: MainAxisSize.min, children: [
           const Icon(Icons.school_outlined, size: 16, color: Tw.slate400),
           const SizedBox(width: 4),
-          Text('Your progress is saved', style: style),
+          Text(context.tr('trust.progress_saved'), style: style),
         ]),
       ],
     );

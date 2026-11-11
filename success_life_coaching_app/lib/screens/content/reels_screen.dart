@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player/video_player.dart';
 import 'package:success_life_coaching_app/config/api_config.dart';
-import 'package:success_life_coaching_app/config/constants.dart';
 import 'package:success_life_coaching_app/l10n/strings.dart';
 import 'package:success_life_coaching_app/models/content_models.dart';
 import 'package:success_life_coaching_app/theme/tw.dart';
@@ -145,8 +144,8 @@ class _ReelTile extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2)),
+                    border:
+                        Border.all(color: Colors.white.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -156,8 +155,8 @@ class _ReelTile extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         'REEL',
-                        style: TwText.eyebrow(9, Colors.white,
-                            trackingEm: 0.08),
+                        style:
+                            TwText.eyebrow(9, Colors.white, trackingEm: 0.08),
                       ),
                     ],
                   ),
@@ -191,8 +190,8 @@ class _ReelTile extends StatelessWidget {
                         reel.courseTitle!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TwText.eyebrow(9.5, Tw.goldLight,
-                            trackingEm: 0.05),
+                        style:
+                            TwText.eyebrow(9.5, Tw.goldLight, trackingEm: 0.05),
                       ),
                       const SizedBox(height: 3),
                     ],
@@ -287,7 +286,8 @@ class _ReelViewerState extends State<ReelViewer> {
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(alpha: 0.6),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                  border:
+                      Border.all(color: Colors.white.withValues(alpha: 0.5)),
                 ),
                 child: const Icon(Icons.play_arrow_rounded,
                     size: 40, color: Colors.white),
@@ -303,7 +303,8 @@ class _ReelViewerState extends State<ReelViewer> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         title: Text(reel.courseTitle ?? 'Reel',
-            style: TwText.sans(16, weight: FontWeight.w700, color: Colors.white)),
+            style:
+                TwText.sans(16, weight: FontWeight.w700, color: Colors.white)),
       ),
       body: Column(
         children: [
@@ -338,8 +339,7 @@ class _ReelViewerState extends State<ReelViewer> {
                               borderRadius: BorderRadius.circular(12)),
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 10),
-                          textStyle:
-                              TwText.sans(12.5, weight: FontWeight.w800),
+                          textStyle: TwText.sans(12.5, weight: FontWeight.w800),
                         ),
                         child: Text(context.tr('reels.view_course')),
                       ),

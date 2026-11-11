@@ -22,6 +22,53 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
+    /**
+     * All UI strings for one language as a flat "group.key" => text map.
+     * Merges lang/{locale}/ui.php (nested) with lang/{locale}.json (flat; wins on conflicts),
+     * and caches the result until either file changes.
+     */
+    private function translationsFor(string $locale): array
+    {
+        static $memo = [];
+
+        $json = base_path("lang/{$locale}.json");
+        $php = base_path("lang/{$locale}/ui.php");
+        $version = (file_exists($json) ? filemtime($json) : 0).'-'.(file_exists($php) ? filemtime($php) : 0);
+        $cacheKey = "ui-translations:{$locale}:{$version}";
+
+        if (isset($memo[$cacheKey])) {
+            return $memo[$cacheKey];
+        }
+
+        $build = function () use ($json, $php) {
+            $flat = [];
+            if (file_exists($php)) {
+                $nested = require $php;
+                $walk = function (array $items, string $prefix) use (&$walk, &$flat) {
+                    foreach ($items as $key => $value) {
+                        is_array($value) ? $walk($value, $prefix.$key.'.') : $flat[$prefix.$key] = $value;
+                    }
+                };
+                if (is_array($nested)) {
+                    $walk($nested, '');
+                }
+            }
+            if (file_exists($json)) {
+                $flat = array_merge($flat, json_decode(file_get_contents($json), true) ?: []);
+            }
+
+            return $flat;
+        };
+
+        try {
+            $result = \Illuminate\Support\Facades\Cache::rememberForever($cacheKey, $build);
+        } catch (\Throwable $e) {
+            $result = $build();
+        }
+
+        return $memo[$cacheKey] = $result;
+    }
+
     private function pendingPaymentsFor(Request $request): int
     {
         if ($request->user()?->role !== 'admin') {
@@ -56,17 +103,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $locale = $request->session()->get('locale', 'en');
-        if (!in_array($locale, ['en', 'am', 'ti'])) {
+        // SetLocale (runs first) already picked the language from the session or the saved cookie.
+        $locale = app()->getLocale();
+        if (! in_array($locale, ['en', 'am', 'ti'], true)) {
             $locale = 'en';
+            app()->setLocale($locale);
         }
-        app()->setLocale($locale);
 
-        $translations = [];
-        $langFile = base_path("lang/{$locale}.json");
-        if (file_exists($langFile)) {
-            $translations = json_decode(file_get_contents($langFile), true) ?: [];
-        }
+        $translations = $this->translationsFor($locale);
 
         return [
             ...parent::share($request),

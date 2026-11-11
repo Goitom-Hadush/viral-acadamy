@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:success_life_coaching_app/config/constants.dart';
+import 'package:success_life_coaching_app/l10n/strings.dart';
+import 'package:success_life_coaching_app/providers/language_provider.dart';
 import 'package:success_life_coaching_app/theme/tw.dart';
 import 'package:success_life_coaching_app/widgets/app_menu.dart';
 import 'package:success_life_coaching_app/widgets/ui.dart';
@@ -54,7 +57,8 @@ class _AuthShellState extends State<AuthShell> {
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.15)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.6),
@@ -76,47 +80,59 @@ class _AuthShellState extends State<AuthShell> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Tw.gold2.withValues(alpha: 0.5)),
+                              border: Border.all(
+                                  color: Tw.gold2.withValues(alpha: 0.5)),
                             ),
-                            child: Image.asset(AppConstants.logoAsset, fit: BoxFit.contain),
+                            child: Image.asset(AppConstants.logoAsset,
+                                fit: BoxFit.contain),
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        const _AuthLangChip(),
                         const Spacer(),
                         if (onLogin)
                           GoldPillButton(
-                            label: 'Join Free',
+                            label: context.tr('layout.join_free'),
                             expand: false,
                             fontSize: 12,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                            onPressed: () => router.pushReplacement('/register'),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 9),
+                            onPressed: () =>
+                                router.pushReplacement('/register'),
                           )
                         else
                           OutlinedButton(
                             onPressed: () => router.pushReplacement('/login'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Tw.goldLight,
-                              backgroundColor: Tw.gold2.withValues(alpha: 0.15),
-                              side: BorderSide(color: Tw.gold2.withValues(alpha: 0.6)),
+                              backgroundColor:
+                                  Tw.gold2.withValues(alpha: 0.15),
+                              side: BorderSide(
+                                  color: Tw.gold2.withValues(alpha: 0.6)),
                               shape: const StadiumBorder(),
                               minimumSize: const Size(0, 36),
-                              textStyle: TwText.sans(12, weight: FontWeight.w800),
+                              textStyle:
+                                  TwText.sans(12, weight: FontWeight.w800),
                             ),
-                            child: const Text('Login'),
+                            child: Text(context.tr('layout.login')),
                           ),
                         const SizedBox(width: 8),
                         Material(
                           color: Colors.white.withValues(alpha: 0.1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+                            side: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.2)),
                           ),
                           child: InkWell(
-                            customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            customBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             onTap: () => _key.currentState?.openEndDrawer(),
                             child: const SizedBox(
                               width: 44,
                               height: 44,
-                              child: Icon(Icons.menu, color: Colors.white, size: 22),
+                              child: Icon(Icons.menu,
+                                  color: Colors.white, size: 22),
                             ),
                           ),
                         ),
@@ -129,7 +145,8 @@ class _AuthShellState extends State<AuthShell> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                      border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.15)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.8),
@@ -142,24 +159,37 @@ class _AuthShellState extends State<AuthShell> {
                     clipBehavior: Clip.antiAlias,
                     child: Column(
                       children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(20, 28, 20, 28), child: widget.child),
+                        Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(20, 28, 20, 28),
+                            child: widget.child),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
                           decoration: BoxDecoration(
-                            border: Border(top: BorderSide(color: Tw.copper100.withValues(alpha: 0.8))),
+                            border: Border(
+                                top: BorderSide(
+                                    color:
+                                        Tw.copper100.withValues(alpha: 0.8))),
                           ),
                           child: Row(
                             children: [
                               Expanded(
-                                child: Text('© ${DateTime.now().year} Success Life Coaching Academy',
-                                    style: TwText.sans(12, color: Tw.slate500)),
+                                child: Text(
+                                    '© ${DateTime.now().year} Success Life Coaching Academy',
+                                    style: TwText.sans(12,
+                                        color: Tw.slate500)),
                               ),
                               InkWell(
                                 onTap: leave,
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6),
-                                  child: Text('← Back to homepage',
-                                      style: TwText.sans(12, weight: FontWeight.w600, color: Tw.copper700)),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 6),
+                                  child: Text(
+                                      context.tr('back_to_home'),
+                                      style: TwText.sans(12,
+                                          weight: FontWeight.w600,
+                                          color: Tw.copper700)),
                                 ),
                               ),
                             ],
@@ -178,19 +208,101 @@ class _AuthShellState extends State<AuthShell> {
   }
 }
 
+/// Compact language chip for the auth screen's floating nav bar.
+class _AuthLangChip extends StatelessWidget {
+  const _AuthLangChip();
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = context.watch<LanguageProvider>();
+    final active = appLanguages.firstWhere(
+      (l) => l.code == lang.languageCode,
+      orElse: () => appLanguages.first,
+    );
+
+    return PopupMenuButton<String>(
+      tooltip: 'Change Language / ቋንቋ ቀይር',
+      position: PopupMenuPosition.under,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: Tw.copper200),
+      ),
+      color: Colors.white,
+      onSelected: (code) => lang.setLanguage(code),
+      itemBuilder: (_) => [
+        for (final l in appLanguages)
+          PopupMenuItem<String>(
+            value: l.code,
+            child: Row(
+              children: [
+                Text(l.flag, style: const TextStyle(fontSize: 16)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    l.label,
+                    style: TwText.sans(
+                      13,
+                      weight: l.code == lang.languageCode
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: l.code == lang.languageCode
+                          ? Tw.copper700
+                          : Tw.slate700,
+                    ),
+                  ),
+                ),
+                if (l.code == lang.languageCode)
+                  const Icon(Icons.check, size: 16, color: Tw.copper700),
+              ],
+            ),
+          ),
+      ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(active.flag, style: const TextStyle(fontSize: 13)),
+            const SizedBox(width: 4),
+            Text(
+              active.label.length > 5
+                  ? active.label.substring(0, 3)
+                  : active.label,
+              style: TwText.sans(11,
+                  weight: FontWeight.w700, color: Colors.white),
+            ),
+            const Icon(Icons.arrow_drop_down, size: 14, color: Colors.white70),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// Eyebrow + Merriweather headline + subtitle used at the top of auth cards.
 class AuthHeading extends StatelessWidget {
   final String eyebrow;
   final String title;
   final String subtitle;
-  const AuthHeading({super.key, required this.eyebrow, required this.title, required this.subtitle});
+  const AuthHeading(
+      {super.key,
+      required this.eyebrow,
+      required this.title,
+      required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(eyebrow.toUpperCase(), style: TwText.eyebrow(12, Tw.copper600, trackingEm: 0.35).copyWith(fontWeight: FontWeight.w600)),
+        Text(eyebrow.toUpperCase(),
+            style: TwText.eyebrow(12, Tw.copper600, trackingEm: 0.35)
+                .copyWith(fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         Text(title, style: TwText.display(28, height: 1.25)),
         const SizedBox(height: 10),
@@ -205,7 +317,11 @@ class AuthSubmitButton extends StatelessWidget {
   final String label;
   final bool loading;
   final VoidCallback? onPressed;
-  const AuthSubmitButton({super.key, required this.label, required this.loading, required this.onPressed});
+  const AuthSubmitButton(
+      {super.key,
+      required this.label,
+      required this.loading,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -241,15 +357,20 @@ class AuthSubmitButton extends StatelessWidget {
                     const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
                     ),
                     const SizedBox(width: 12),
                   ],
                   Text(label.toUpperCase(),
-                      style: TwText.sans(16, weight: FontWeight.w700, color: Colors.white, letterSpacing: 2.9)),
+                      style: TwText.sans(16,
+                          weight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 2.9)),
                   if (!loading) ...[
                     const SizedBox(width: 10),
-                    const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                    const Icon(Icons.arrow_forward,
+                        color: Colors.white, size: 20),
                   ],
                 ],
               ),

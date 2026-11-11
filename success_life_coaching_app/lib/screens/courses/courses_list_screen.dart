@@ -40,7 +40,11 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
     if (lower.contains('mind') || lower.contains('habit')) return '🧠';
     if (lower.contains('lead') || lower.contains('exec')) return '💼';
     if (lower.contains('career') || lower.contains('job')) return '🚀';
-    if (lower.contains('money') || lower.contains('income') || lower.contains('wealth')) return '📈';
+    if (lower.contains('money') ||
+        lower.contains('income') ||
+        lower.contains('wealth')) {
+      return '📈';
+    }
     return '📚';
   }
 
@@ -77,7 +81,7 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
           children: [
-            PageIntro(
+            const PageIntro(
               chip: '📚 Academy Catalog',
               title: 'Transformative Masterclasses',
               subtitle:
@@ -94,12 +98,14 @@ class _CoursesListScreenState extends State<CoursesListScreen> {
                 hintStyle: TwText.sans(14, color: Tw.slate400),
                 filled: true,
                 fillColor: Colors.white,
-                prefixIcon: const Icon(Icons.search, size: 20, color: Tw.slate400),
+                prefixIcon:
+                    const Icon(Icons.search, size: 20, color: Tw.slate400),
                 suffixIcon: _query.isEmpty
                     ? null
                     : IconButton(
                         tooltip: 'Clear',
-                        icon: const Icon(Icons.close, size: 18, color: Tw.slate400),
+                        icon: const Icon(Icons.close,
+                            size: 18, color: Tw.slate400),
                         onPressed: () => setState(() {
                           _search.clear();
                           _query = '';

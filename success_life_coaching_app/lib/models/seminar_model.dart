@@ -131,7 +131,9 @@ class Seminar {
       final l = priceLabelText?.toLowerCase() ?? '';
       if (priceLabelText != null &&
           !l.contains('etb 0') &&
-          !l.contains('0 etb')) return priceLabelText!;
+          !l.contains('0 etb')) {
+        return priceLabelText!;
+      }
       return 'Free';
     }
     return priceLabelText ?? 'ETB ${entranceFee.toStringAsFixed(0)}';

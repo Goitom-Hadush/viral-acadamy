@@ -31,7 +31,8 @@ class SurfaceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: r,
-        border: Border.all(color: borderColor ?? Tw.slate200.withValues(alpha: 0.8)),
+        border: Border.all(
+            color: borderColor ?? Tw.slate200.withValues(alpha: 0.8)),
         boxShadow: Tw.surfaceShadow,
       ),
       child: Material(
@@ -80,7 +81,8 @@ class HomeCard extends StatelessWidget {
         color: Colors.transparent,
         borderRadius: r,
         clipBehavior: Clip.antiAlias,
-        child: InkWell(onTap: onTap, child: Padding(padding: padding, child: child)),
+        child: InkWell(
+            onTap: onTap, child: Padding(padding: padding, child: child)),
       ),
     );
   }
@@ -154,7 +156,10 @@ class _HeroBackground extends StatelessWidget {
             gradient: RadialGradient(
               center: const Alignment(0.84, -0.84),
               radius: 0.9,
-              colors: [Tw.gold2.withValues(alpha: 0.22), Tw.gold2.withValues(alpha: 0)],
+              colors: [
+                Tw.gold2.withValues(alpha: 0.22),
+                Tw.gold2.withValues(alpha: 0)
+              ],
             ),
           ),
         ),
@@ -164,7 +169,10 @@ class _HeroBackground extends StatelessWidget {
             gradient: RadialGradient(
               center: const Alignment(-0.84, 1),
               radius: 0.75,
-              colors: [Tw.accent.withValues(alpha: 0.28), Tw.accent.withValues(alpha: 0)],
+              colors: [
+                Tw.accent.withValues(alpha: 0.28),
+                Tw.accent.withValues(alpha: 0)
+              ],
             ),
           ),
         ),
@@ -241,7 +249,8 @@ class _PressableBoxState extends State<_PressableBox> {
   }
 }
 
-Widget _buttonContent(String label, TextStyle style, {IconData? icon, Widget? leading, bool loading = false, Color? spinner}) {
+Widget _buttonContent(String label, TextStyle style,
+    {IconData? icon, Widget? leading, bool loading = false, Color? spinner}) {
   return Row(
     mainAxisSize: MainAxisSize.min,
     mainAxisAlignment: MainAxisAlignment.center,
@@ -250,7 +259,8 @@ Widget _buttonContent(String label, TextStyle style, {IconData? icon, Widget? le
         SizedBox(
           width: 18,
           height: 18,
-          child: CircularProgressIndicator(strokeWidth: 2, color: spinner ?? style.color),
+          child: CircularProgressIndicator(
+              strokeWidth: 2, color: spinner ?? style.color),
         ),
         const SizedBox(width: 10),
       ] else if (leading != null) ...[
@@ -308,7 +318,8 @@ class PrimaryButton extends StatelessWidget {
             widthFactor: 1,
             child: _buttonContent(
               label,
-              TwText.sans(fontSize, weight: FontWeight.w600, color: Colors.white),
+              TwText.sans(fontSize,
+                  weight: FontWeight.w600, color: Colors.white),
               icon: icon,
               leading: leading,
               loading: loading,
@@ -360,7 +371,8 @@ class SecondaryButton extends StatelessWidget {
             widthFactor: 1,
             child: _buttonContent(
               label,
-              TwText.sans(fontSize, weight: FontWeight.w600, color: Tw.slate700),
+              TwText.sans(fontSize,
+                  weight: FontWeight.w600, color: Tw.slate700),
               icon: icon,
               leading: leading,
             ),
@@ -424,7 +436,11 @@ class GhostPillButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool expand;
 
-  const GhostPillButton({super.key, required this.label, required this.onPressed, this.expand = true});
+  const GhostPillButton(
+      {super.key,
+      required this.label,
+      required this.onPressed,
+      this.expand = true});
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +457,9 @@ class GhostPillButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
         child: Center(
           widthFactor: 1,
-          child: Text(label, style: TwText.sans(16, weight: FontWeight.w600, color: Colors.white)),
+          child: Text(label,
+              style: TwText.sans(16,
+                  weight: FontWeight.w600, color: Colors.white)),
         ),
       ),
     );
@@ -465,7 +483,8 @@ class EmeraldChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: Tw.emerald200.withValues(alpha: 0.8)),
       ),
-      child: Text(text.toUpperCase(), style: TwText.eyebrow(11, Tw.emerald800, trackingEm: 0.2)),
+      child: Text(text.toUpperCase(),
+          style: TwText.eyebrow(11, Tw.emerald800, trackingEm: 0.2)),
     );
   }
 }
@@ -492,7 +511,8 @@ class HeroChip extends StatelessWidget {
           Flexible(
             child: Text(
               text.toUpperCase(),
-              style: TwText.eyebrow(11, Tw.cream, trackingEm: 0.18).copyWith(fontWeight: FontWeight.w600),
+              style: TwText.eyebrow(11, Tw.cream, trackingEm: 0.18)
+                  .copyWith(fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -511,9 +531,11 @@ class PulseDot extends StatefulWidget {
   State<PulseDot> createState() => _PulseDotState();
 }
 
-class _PulseDotState extends State<PulseDot> with SingleTickerProviderStateMixin {
+class _PulseDotState extends State<PulseDot>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _c =
-      AnimationController(vsync: this, duration: const Duration(seconds: 2))..repeat();
+      AnimationController(vsync: this, duration: const Duration(seconds: 2))
+        ..repeat();
 
   @override
   void dispose() {
@@ -564,21 +586,26 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final align = center ? TextAlign.center : TextAlign.start;
     return Column(
-      crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(eyebrow.toUpperCase(),
             textAlign: align,
-            style: TwText.eyebrow(11, dark ? Tw.cream : Tw.goldMuted, trackingEm: 0.22)),
+            style: TwText.eyebrow(11, dark ? Tw.cream : Tw.goldMuted,
+                trackingEm: 0.22)),
         const SizedBox(height: 8),
         Text(title,
             textAlign: align,
-            style: TwText.display(30, color: dark ? Colors.white : Tw.slate900, height: 1.25)),
+            style: TwText.display(30,
+                color: dark ? Colors.white : Tw.slate900, height: 1.25)),
         if (subtitle != null) ...[
           const SizedBox(height: 10),
           Text(subtitle!,
               textAlign: align,
               style: TwText.sans(14,
-                  color: dark ? const Color(0xFFECFDF5).withValues(alpha: 0.75) : Tw.slate600,
+                  color: dark
+                      ? const Color(0xFFECFDF5).withValues(alpha: 0.75)
+                      : Tw.slate600,
                   height: 1.6)),
         ],
       ],
@@ -591,7 +618,8 @@ class PageIntro extends StatelessWidget {
   final String chip;
   final String title;
   final String? subtitle;
-  const PageIntro({super.key, required this.chip, required this.title, this.subtitle});
+  const PageIntro(
+      {super.key, required this.chip, required this.title, this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -600,10 +628,13 @@ class PageIntro extends StatelessWidget {
       children: [
         EmeraldChip(chip),
         const SizedBox(height: 12),
-        Text(title, style: TwText.sans(24, weight: FontWeight.w900, height: 1.2, letterSpacing: -0.4)),
+        Text(title,
+            style: TwText.sans(24,
+                weight: FontWeight.w900, height: 1.2, letterSpacing: -0.4)),
         if (subtitle != null) ...[
           const SizedBox(height: 8),
-          Text(subtitle!, style: TwText.sans(14, color: Tw.slate600, height: 1.55)),
+          Text(subtitle!,
+              style: TwText.sans(14, color: Tw.slate600, height: 1.55)),
         ],
       ],
     );
@@ -631,7 +662,9 @@ class InitialsAvatar extends StatelessWidget {
   final double size;
   final List<Color> colors;
   const InitialsAvatar(this.initials,
-      {super.key, this.size = 44, this.colors = const [Tw.emerald600, Tw.copper800]});
+      {super.key,
+      this.size = 44,
+      this.colors = const [Tw.emerald600, Tw.copper800]});
 
   @override
   Widget build(BuildContext context) {
@@ -641,7 +674,10 @@ class InitialsAvatar extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: colors),
+        gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: colors),
         boxShadow: [
           BoxShadow(
             color: colors.first.withValues(alpha: 0.3),
@@ -650,7 +686,9 @@ class InitialsAvatar extends StatelessWidget {
           ),
         ],
       ),
-      child: Text(initials, style: TwText.sans(size * 0.34, weight: FontWeight.w800, color: Colors.white)),
+      child: Text(initials,
+          style: TwText.sans(size * 0.34,
+              weight: FontWeight.w800, color: Colors.white)),
     );
   }
 }
@@ -760,23 +798,24 @@ class ShimmerCardSkeleton extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFFE2E8F0),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(radius)),
                 ),
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 4,
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const ShimmerBox(width: double.infinity, height: 18, radius: 6),
-                    const ShimmerBox(width: 220, height: 14, radius: 4),
+                    ShimmerBox(width: double.infinity, height: 18, radius: 6),
+                    ShimmerBox(width: 220, height: 14, radius: 4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         ShimmerBox(width: 120, height: 14, radius: 4),
                         ShimmerBox(width: 90, height: 26, radius: 999),
                       ],
@@ -908,7 +947,9 @@ class ErrorBox extends StatelessWidget {
                   const Icon(Icons.error_outline, size: 20, color: Tw.rose600),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(m, style: TwText.sans(14, weight: FontWeight.w500, color: Tw.rose700)),
+                    child: Text(m,
+                        style: TwText.sans(14,
+                            weight: FontWeight.w500, color: Tw.rose700)),
                   ),
                 ],
               ),
@@ -965,7 +1006,10 @@ class _AuthFieldState extends State<AuthField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(widget.label,
-            style: TwText.sans(14, weight: FontWeight.w600, color: Tw.slate700, letterSpacing: 0.2)),
+            style: TwText.sans(14,
+                weight: FontWeight.w600,
+                color: Tw.slate700,
+                letterSpacing: 0.2)),
         const SizedBox(height: 8),
         TextField(
           controller: widget.controller,
@@ -980,18 +1024,23 @@ class _AuthFieldState extends State<AuthField> {
             hintStyle: TwText.sans(16, color: Tw.slate400),
             filled: true,
             fillColor: hasError ? Tw.rose50.withValues(alpha: 0.6) : Tw.slate50,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
             prefixIcon: Icon(widget.icon, size: 20, color: Tw.copper500),
             suffixIcon: widget.obscure
                 ? IconButton(
                     tooltip: _hidden ? 'Show password' : 'Hide password',
-                    icon: Icon(_hidden ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    icon: Icon(
+                        _hidden
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
                         color: Tw.slate400),
                     onPressed: () => setState(() => _hidden = !_hidden),
                   )
                 : null,
             enabledBorder: border(hasError ? Tw.rose300 : Tw.slate200),
-            focusedBorder: border(hasError ? const Color(0xFFFB7185) : Tw.copper500, 2),
+            focusedBorder:
+                border(hasError ? const Color(0xFFFB7185) : Tw.copper500, 2),
             border: border(Tw.slate200),
           ),
         ),
@@ -1002,7 +1051,9 @@ class _AuthFieldState extends State<AuthField> {
               const Icon(Icons.error_outline, size: 16, color: Tw.rose600),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(widget.error!, style: TwText.sans(14, weight: FontWeight.w500, color: Tw.rose600)),
+                child: Text(widget.error!,
+                    style: TwText.sans(14,
+                        weight: FontWeight.w500, color: Tw.rose600)),
               ),
             ],
           ),
@@ -1018,7 +1069,8 @@ String etb(double price, {bool thousands = false}) {
   var n = whole ? price.toStringAsFixed(0) : price.toStringAsFixed(2);
   if (thousands) {
     final parts = n.split('.');
-    final digits = parts[0].replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
+    final digits =
+        parts[0].replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
     n = parts.length > 1 ? '$digits.${parts[1]}' : digits;
   }
   return '$n ETB';

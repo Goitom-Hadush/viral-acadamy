@@ -50,9 +50,15 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
           future: _myCourses,
           builder: (context, snap) {
             final courses = snap.data ?? const <Course>[];
-            final totalLessons = courses.fold<int>(0, (sum, c) => sum + c.lessonsCount);
-            final completedLessons = courses.fold<int>(0, (sum, c) => sum + c.completedLessonsCount);
-            final completedCourses = courses.where((c) => c.lessonsCount > 0 && c.completedLessonsCount >= c.lessonsCount).length;
+            final totalLessons =
+                courses.fold<int>(0, (sum, c) => sum + c.lessonsCount);
+            final completedLessons =
+                courses.fold<int>(0, (sum, c) => sum + c.completedLessonsCount);
+            final completedCourses = courses
+                .where((c) =>
+                    c.lessonsCount > 0 &&
+                    c.completedLessonsCount >= c.lessonsCount)
+                .length;
 
             return ListView(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -113,7 +119,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                             child: Text(
                               'Verified Student 🎓',
                               style: TwText.sans(11,
-                                  weight: FontWeight.w700, color: Tw.emerald200),
+                                  weight: FontWeight.w700,
+                                  color: Tw.emerald200),
                             ),
                           ),
                         ],
@@ -130,7 +137,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                       const SizedBox(height: 8),
                       Text(
                         'Continue your learning journey with ${courses.length} masterclass${courses.length == 1 ? '' : 'es'} in progress.',
-                        style: TwText.sans(14, color: Tw.copper100, height: 1.5),
+                        style:
+                            TwText.sans(14, color: Tw.copper100, height: 1.5),
                       ),
                     ],
                   ),
@@ -150,7 +158,9 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                     _StatTile(
                       icon: Icons.check_circle_outline,
                       label: 'Lessons',
-                      value: totalLessons > 0 ? '$completedLessons/$totalLessons' : '$completedLessons',
+                      value: totalLessons > 0
+                          ? '$completedLessons/$totalLessons'
+                          : '$completedLessons',
                       color: Tw.emerald700,
                       bg: Tw.emerald50,
                     ),
@@ -185,9 +195,10 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                if (snap.connectionState != ConnectionState.done && courses.isEmpty)
-                  Column(
-                    children: const [
+                if (snap.connectionState != ConnectionState.done &&
+                    courses.isEmpty)
+                  const Column(
+                    children: [
                       ShimmerCardSkeleton(height: 140),
                       SizedBox(height: 14),
                       ShimmerCardSkeleton(height: 140),
@@ -220,7 +231,8 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
                       Text(
                           'Explore our world-class video masterclasses and start transforming your skills today.',
                           textAlign: TextAlign.center,
-                          style: TwText.sans(13.5, color: Tw.slate600, height: 1.55)),
+                          style: TwText.sans(13.5,
+                              color: Tw.slate600, height: 1.55)),
                       const SizedBox(height: 20),
                       PrimaryButton(
                           label: 'Explore Catalog',
@@ -278,12 +290,14 @@ class _StatTile extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(value,
-                style: TwText.sans(18, weight: FontWeight.w900, color: Tw.slate900)),
+                style: TwText.sans(18,
+                    weight: FontWeight.w900, color: Tw.slate900)),
             const SizedBox(height: 2),
             Text(label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TwText.sans(11, weight: FontWeight.w600, color: Tw.slate500)),
+                style: TwText.sans(11,
+                    weight: FontWeight.w600, color: Tw.slate500)),
           ],
         ),
       ),
@@ -315,8 +329,8 @@ class _MyCourseTile extends StatelessWidget {
                 child: CourseImage(
                   url: course.thumbnail,
                   borderRadius: BorderRadius.circular(14),
-                  overlays: [
-                    const Center(
+                  overlays: const [
+                    Center(
                       child: Icon(Icons.play_circle_fill,
                           color: Colors.white, size: 30),
                     ),
@@ -332,7 +346,8 @@ class _MyCourseTile extends StatelessWidget {
                       course.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TwText.sans(15, weight: FontWeight.w800, height: 1.3),
+                      style:
+                          TwText.sans(15, weight: FontWeight.w800, height: 1.3),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -350,11 +365,13 @@ class _MyCourseTile extends StatelessWidget {
             children: [
               Text(
                 'Progress: ${course.completedLessonsCount} / ${course.lessonsCount} lessons',
-                style: TwText.sans(12, weight: FontWeight.w600, color: Tw.slate700),
+                style: TwText.sans(12,
+                    weight: FontWeight.w600, color: Tw.slate700),
               ),
               Text(
                 '$percent%',
-                style: TwText.sans(12, weight: FontWeight.w800, color: Tw.copper700),
+                style: TwText.sans(12,
+                    weight: FontWeight.w800, color: Tw.copper700),
               ),
             ],
           ),
