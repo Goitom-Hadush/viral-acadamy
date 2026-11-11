@@ -18,6 +18,7 @@ class Course extends Model
         'description',
         'thumbnail',
         'price',
+        'price_usd',
         'status',
     ];
 
@@ -50,6 +51,12 @@ class Course extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    // A course has many promo codes (free-enrollment coupons)
+    public function promoCodes()
+    {
+        return $this->hasMany(PromoCode::class);
+    }
+
     // A course has many text reviews
 public function reviews()
 {

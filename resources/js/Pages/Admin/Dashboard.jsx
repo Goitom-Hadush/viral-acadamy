@@ -5,17 +5,14 @@ export default function AdminDashboard({
     stats = { students: 0, courses: 0, revenue: 0, average_price: 0 },
     courses = [],
     recentPayments = [],
-    auth
+    auth = { user: null }
 }) {
+    const userName = auth?.user?.name?.split(' ')[0] ?? 'Admin';
     return (
         <AdminLayout>
             <Head>
-                <title>Admin Dashboard | Viral Acadamy</title>
-                <meta name="description" content="Manage students, courses, payments, and platform revenue from Viral Acadamy's admin dashboard." />
-                <meta name="keywords" content="admin dashboard, online course platform, viral acadamy, manage courses" />
-                <meta property="og:title" content="Admin Dashboard | Viral Acadamy" />
-                <meta property="og:description" content="Manage students, courses, payments, and platform revenue from Viral Acadamy's admin dashboard." />
-                <meta property="og:type" content="website" />
+                <title>Admin Dashboard | Success Life Coaching Academy</title>
+                <meta name="robots" content="noindex, nofollow" />
             </Head>
             
             {/* Hero Section */}
@@ -32,7 +29,7 @@ export default function AdminDashboard({
                         </div>
                         <div>
                             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-copper-100 mb-1">Admin Dashboard</p>
-                            <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Welcome back, {auth.user.name.split(' ')[0]}!</h1>
+                            <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Welcome back, {userName}!</h1>
                         </div>
                     </div>
                 </div>
@@ -42,11 +39,11 @@ export default function AdminDashboard({
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10 animate-slide-up">
                 <Link href="/admin/users" className="block group">
                     <div className="surface-card relative overflow-hidden p-7 rounded-3xl transition-all duration-500 hover:-translate-y-3 shadow-lg hover:shadow-xl border border-slate-100">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-copper-500 to-bronze opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 group-hover:text-white transition-colors">Total Students</h3>
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-copper-50 text-copper-700 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
                                     <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>

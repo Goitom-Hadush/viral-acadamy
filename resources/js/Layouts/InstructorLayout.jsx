@@ -1,9 +1,14 @@
+import Footer from '@/Components/Footer';
+import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import PublicMenu from '@/Components/PublicMenu';
+import { useT } from '@/hooks/useT';
 import { Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function InstructorLayout({ children }) {
     const { props, url } = usePage();
     const { auth = { user: { name: 'Instructor' } } } = props;
+    const t = useT();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const navigation = useMemo(() => ([
         {
@@ -48,8 +53,8 @@ export default function InstructorLayout({ children }) {
         },
         {
             label: 'Browse Courses',
-            href: '/',
-            active: url === '/',
+            href: '/courses',
+            active: url.startsWith('/courses'),
             icon: (
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -82,7 +87,7 @@ export default function InstructorLayout({ children }) {
     }, [url]);
 
     useEffect(() => {
-        if (!sidebarOpen) {
+        if (!sidebarOpen || window.innerWidth >= 1024) {
             document.body.style.overflow = '';
             return;
         }
@@ -105,13 +110,13 @@ export default function InstructorLayout({ children }) {
             )}
             
             {/* Sidebar */}
-            <aside className={`fixed inset-y-0 left-0 z-50 flex w-80 max-w-[85vw] flex-col border-r border-copper-100 bg-white transform transition-transform duration-300 lg:static lg:w-72 lg:max-w-none lg:translate-x-0 lg:shadow-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <aside className={`fixed inset-y-0 left-0 z-50 flex w-80 max-w-[85vw] flex-col overflow-y-auto border-r border-copper-100 bg-white transform transition-transform duration-300 lg:static lg:w-72 lg:max-w-none lg:translate-x-0 lg:shadow-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo Section */}
                 <div className="flex items-center justify-between border-b border-copper-100 p-6">
                     <div className="flex items-center">
                         <img
                             src="/logo.png?v=admin-logo-2"
-                            alt="Viral Acadamy logo"
+                            alt="Success Life Coaching Academy logo"
                             className="h-20 w-52 rounded-2xl object-contain bg-white p-1"
                         />
                     </div>
@@ -141,7 +146,7 @@ export default function InstructorLayout({ children }) {
                 </div>
 
                 {/* Navigation */}
-                <nav className="mt-6 flex-1 space-y-2 px-4">
+                <nav className="mt-6 flex-1 min-h-0 space-y-2 overflow-y-auto px-4 pb-4">
                     {navigation.map((item) => (
                         <Link
                             key={item.label}
@@ -169,7 +174,7 @@ export default function InstructorLayout({ children }) {
                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
-                        Logout
+                        {t('auth.logout', 'Logout')}
                     </button>
                 </div>
             </aside>
@@ -177,7 +182,7 @@ export default function InstructorLayout({ children }) {
             {/* Main Content */}
             <div className="flex min-h-screen flex-1 flex-col lg:min-w-0 bg-slate-50">
                 {/* Header */}
-                <header className="sticky top-0 z-30 border-b border-copper-100 bg-white px-4 py-4 sm:px-6">
+                <header className="sticky top-0 z-30 border-b border-copper-100/80 bg-white/80 px-4 py-4 backdrop-blur-xl sm:px-6">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <div className="flex min-w-0 items-center gap-4">
                             <button 
@@ -191,11 +196,13 @@ export default function InstructorLayout({ children }) {
                                 </svg>
                             </button>
                             <div className="min-w-0">
-                                <h1 className="truncate text-xl font-bold text-slate-900 sm:text-2xl">Viral Acadamy</h1>
-                                <p className="hidden text-sm text-slate-500 sm:block">Instructor workspace</p>
+                                <h1 className="truncate text-xl font-bold text-slate-900 sm:text-2xl">Success Life Coaching Academy</h1>
+                                <p className="hidden text-sm text-slate-500 sm:block">{t('dash.instructor_sub', 'Instructor teaching dashboard')}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
+                            <PublicMenu className="hidden xl:flex" />
+                            <LanguageSwitcher />
                             <div className="hidden text-right sm:block">
                                 <p className="text-sm font-semibold text-slate-700">{auth.user.name}</p>
                                 <p className="text-xs text-slate-500">Instructor</p>
@@ -204,13 +211,13 @@ export default function InstructorLayout({ children }) {
                                 href={route('profile.edit')}
                                 className="rounded-2xl border border-copper-200 bg-copper-50 px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:bg-copper-100 hover:shadow-md"
                             >
-                                Profile
+                                {t('auth.profile', 'Profile')}
                             </Link>
                             <button
                                 onClick={handleLogout}
                                 className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-2.5 text-sm font-semibold text-rose-600 shadow-sm transition-all duration-200 hover:bg-rose-100 hover:shadow-md"
                             >
-                                Logout
+                                {t('auth.logout', 'Logout')}
                             </button>
                         </div>
                     </div>
@@ -220,6 +227,7 @@ export default function InstructorLayout({ children }) {
                 <main className="flex-1 overflow-x-hidden p-4 sm:p-6 lg:p-8">
                     {children}
                 </main>
+                <Footer className="border-t border-copper-100 bg-white/95" />
             </div>
         </div>
     );

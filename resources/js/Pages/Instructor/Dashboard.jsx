@@ -5,12 +5,8 @@ export default function InstructorDashboard({ stats = { courses: 0, published: 0
     return (
         <InstructorLayout>
             <Head>
-                <title>Instructor Dashboard | Viral Acadamy</title>
-                <meta name="description" content="Manage your courses, track student progress, and monitor your earnings on Viral Acadamy's instructor dashboard." />
-                <meta name="keywords" content="instructor dashboard, online courses, teach online, viral acadamy" />
-                <meta property="og:title" content="Instructor Dashboard | Viral Acadamy" />
-                <meta property="og:description" content="Manage your courses, track student progress, and monitor your earnings on Viral Acadamy's instructor dashboard." />
-                <meta property="og:type" content="website" />
+                <title>Instructor Dashboard | Success Life Coaching Academy</title>
+                <meta name="robots" content="noindex, nofollow" />
             </Head>
             
             {/* Hero Section */}
@@ -37,11 +33,11 @@ export default function InstructorDashboard({ stats = { courses: 0, published: 0
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10 animate-slide-up">
                 <Link href={route('instructor.courses.index')} className="block group">
                     <div className="surface-card relative overflow-hidden p-7 rounded-3xl transition-all duration-500 hover:-translate-y-3 shadow-lg hover:shadow-xl border border-slate-100">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-copper-500 to-bronze opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 group-hover:text-white transition-colors">Total Courses</h3>
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-copper-50 text-copper-700 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
                                     <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
@@ -71,11 +67,11 @@ export default function InstructorDashboard({ stats = { courses: 0, published: 0
 
                 <Link href={route('instructor.students')} className="block group">
                     <div className="surface-card relative overflow-hidden p-7 rounded-3xl transition-all duration-500 hover:-translate-y-3 shadow-lg hover:shadow-xl border border-slate-100">
-                        <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-fuchsia-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-bronze to-copper-800 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-6">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-600 group-hover:text-white transition-colors">Total Students</h3>
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50 text-violet-600 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 group-hover:bg-white/20 group-hover:text-white transition-colors shadow-md">
                                     <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>

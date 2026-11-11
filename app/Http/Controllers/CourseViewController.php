@@ -22,8 +22,36 @@ class CourseViewController extends Controller
             $query->with('user:id,name')->latest();
         }]);
 
+        // Check enrollment and pending payment state
+        $enrollment = null;
+        $hasPendingPayment = false;
+        if (auth()->check()) {
+            $userId = auth()->id();
+            $purchase = \App\Models\Purchase::where('user_id', $userId)
+                ->where('course_id', $course->id)
+                ->where('status', 'paid')
+                ->first();
+
+            if ($purchase) {
+                $enrollment = [
+                    'is_enrolled' => true,
+                    'is_expired' => $purchase->isExpired(),
+                    'is_active' => $purchase->isActive(),
+                    'expires_at' => $purchase->expires_at ? $purchase->expires_at->format('M d, Y') : null,
+                    'days_remaining' => $purchase->daysRemaining(),
+                ];
+            }
+
+            $hasPendingPayment = \App\Models\Payment::where('user_id', $userId)
+                ->where('course_id', $course->id)
+                ->where('status', 'pending')
+                ->exists();
+        }
+
         return Inertia::render('Course/Show', [
             'course' => $course,
+            'enrollment' => $enrollment,
+            'hasPendingPayment' => $hasPendingPayment,
             'auth' => [
                 'user' => auth()->check() ? auth()->user() : null,
             ],

@@ -3,7 +3,8 @@ export default function ApplicationLogo({ className = '', ...props }) {
         <img
             {...props}
             src="/logo.png?v=admin-logo-2"
-            alt="Viral Acadamy logo"
+            alt="Success Life Coaching Academy logo"
+            decoding="async"
             className={`object-contain ${className}`.trim()}
         />
     );

@@ -87,7 +87,7 @@ export default function StudentLayout({ children }) {
                     <div className="flex items-center gap-3">
                         <img
                             src="/logo.png?v=admin-logo-2"
-                            alt="Viral Acadamy logo"
+                            alt="Success Life Coaching Academy logo"
                             className="h-10 w-24 rounded-2xl object-contain bg-white p-1 ring-1 ring-slate-200"
                         />
                         <div>
@@ -171,7 +171,7 @@ export default function StudentLayout({ children }) {
                                 </svg>
                             </button>
                             <div className="min-w-0">
-                                <h1 className="truncate text-xl font-bold text-slate-900 sm:text-2xl">Viral Acadamy</h1>
+                                <h1 className="truncate text-xl font-bold text-slate-900 sm:text-2xl">Success Life Coaching Academy</h1>
                                 <p className="hidden text-sm text-slate-500 sm:block">Student learning dashboard</p>
                             </div>
                         </div>

@@ -14,13 +14,16 @@ public function index(Course $course)
 {
     $user = Auth::user();
 
-    $hasPurchased = Purchase::where('user_id', $user->id)
-                            ->where('course_id', $course->id)
-                            ->where('status', 'paid')
-                            ->exists();
+    $purchase = Purchase::where('user_id', $user->id)
+                        ->where('course_id', $course->id)
+                        ->where('status', 'paid')
+                        ->first();
 
-    if (!$hasPurchased && $user->role !== 'admin') {
-        abort(403, 'You have not purchased this course.');
+    if ($user->role !== 'admin' && (!$purchase || $purchase->isExpired())) {
+        if ($purchase && $purchase->isExpired()) {
+            return redirect()->route('courses.show', $course->id)->with('error', 'Your 6-month access to this course has expired. Please renew your enrollment to continue.');
+        }
+        abort(403, 'You have not enrolled in this course.');
     }
 
     $course->load('videos');

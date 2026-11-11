@@ -1,11 +1,15 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
+import Footer from '@/Components/Footer';
 import NavLink from '@/Components/NavLink';
+import PublicMenu from '@/Components/PublicMenu';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { useT } from '@/hooks/useT';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
+    const t = useT();
     const { auth = { user: null } } = usePage().props;
     const user = auth.user; // Will be null if not logged in, but this layout should only be used when logged in!
 
@@ -25,12 +29,13 @@ export default function AuthenticatedLayout({ header, children }) {
                             </Link>
                         </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex sm:items-center">
+                                <PublicMenu />
                                 <NavLink
                                     href={route('dashboard')}
                                     active={route().current('dashboard')}
                                 >
-                                    Dashboard
+                                    {t('auth.dashboard', 'Dashboard')}
                                 </NavLink>
                             </div>
                         </div>
@@ -66,14 +71,14 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route('profile.edit')}
                                         >
-                                            Profile
+                                            {t('auth.profile', 'Profile')}
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route('logout')}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            {t('auth.logout', 'Log Out')}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
@@ -130,11 +135,12 @@ export default function AuthenticatedLayout({ header, children }) {
                     }
                 >
                     <div className="space-y-1 pb-3 pt-2">
+                        <PublicMenu variant="mobile" />
                         <ResponsiveNavLink
                             href={route('dashboard')}
                             active={route().current('dashboard')}
                         >
-                            Dashboard
+                            {t('auth.dashboard', 'Dashboard')}
                         </ResponsiveNavLink>
                     </div>
 
@@ -150,14 +156,14 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="mt-3 space-y-1">
                             <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
+                                {t('auth.profile', 'Profile')}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink
                                 method="post"
                                 href={route('logout')}
                                 as="button"
                             >
-                                Log Out
+                                {t('auth.logout', 'Log Out')}
                             </ResponsiveNavLink>
                         </div>
                     </div>
@@ -172,7 +178,8 @@ export default function AuthenticatedLayout({ header, children }) {
                 </header>
             )}
 
-            <main>{children}</main>
+            <main className="min-h-[calc(100vh-5rem)]">{children}</main>
+            <Footer />
         </div>
     );
 }

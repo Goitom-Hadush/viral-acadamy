@@ -1,2 +1,18 @@
 User-agent: *
-Disallow:
+Allow: /
+Allow: /courses/
+Allow: /register
+Allow: /login
+
+# Block admin and private areas from indexing
+Disallow: /admin/
+Disallow: /instructor/
+Disallow: /student/
+Disallow: /profile
+Disallow: /stream/
+
+# Allow Google Image Bot
+User-agent: Googlebot-Image
+Allow: /storage/
+
+Sitemap: https://www.successlifecoaching.com/sitemap.xml

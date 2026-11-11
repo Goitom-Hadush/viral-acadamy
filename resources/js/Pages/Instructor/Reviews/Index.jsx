@@ -24,17 +24,17 @@ export default function InstructorReviews({ reviews = [], stats = {}, auth }) {
     return (
         <InstructorLayout>
             {/* Hero Section */}
-            <div className="mb-8 rounded-3xl hero-gradient p-8 text-white shadow-xl shadow-indigo-500/25 sm:p-10 animate-fade-in">
+            <div className="mb-8 rounded-3xl hero-gradient p-8 text-white shadow-xl shadow-copper-900/20 sm:p-10 animate-fade-in">
                 <div className="flex items-center gap-3 mb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
                         <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-100">Reviews Management</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-copper-100">Reviews Management</p>
                 </div>
                 <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Comments & Ratings</h1>
-                <p className="mt-3 max-w-2xl text-lg leading-relaxed text-indigo-100">
+                <p className="mt-3 max-w-2xl text-lg leading-relaxed text-copper-100">
                     View and manage student reviews and ratings for your courses.
                 </p>
             </div>
@@ -42,11 +42,11 @@ export default function InstructorReviews({ reviews = [], stats = {}, auth }) {
             {/* Stats */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8 animate-slide-up">
                 <div className="surface-card group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-copper-500 to-bronze opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-600 group-hover:text-white transition-colors">Total Reviews</h3>
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 group-hover:bg-white/20 group-hover:text-white transition-colors">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-copper-100 text-copper-700 group-hover:bg-white/20 group-hover:text-white transition-colors">
                                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -111,8 +111,8 @@ export default function InstructorReviews({ reviews = [], stats = {}, auth }) {
             <div className="surface-card overflow-hidden animate-slide-up">
                 {reviews.length === 0 ? (
                     <div className="p-16 text-center">
-                        <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
-                            <svg className="h-10 w-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-copper-50">
+                            <svg className="h-10 w-10 text-copper-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
@@ -137,7 +137,7 @@ export default function InstructorReviews({ reviews = [], stats = {}, auth }) {
                                     <tr key={review.id} className="hover:bg-slate-50 transition-colors">
                                         <td className="p-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-lg shadow-md">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-copper-700 to-bronze text-white font-bold text-lg shadow-md">
                                                     {review.user.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>

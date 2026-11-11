@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Disabled: Laravel's /storage/{path} serve route conflicts with public
+            // thumbnails and returns 403 to Flutter when the symlink is missing.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],
@@ -41,7 +43,7 @@ return [
                 'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL').'/media',
             'visibility' => 'public',
             'throw' => false,
         ],

@@ -61,6 +61,33 @@ class ProfileTest extends TestCase
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
+    public function test_social_media_can_be_updated(): void
+    {
+        $user = User::factory()->create([
+            'social_media' => ['instagram' => '@old'],
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch('/profile', [
+                'name' => 'Test User',
+                'email' => 'test@example.com',
+                'social_media' => [
+                    'instagram' => '@newhandle',
+                    'facebook' => 'fb-profile',
+                ],
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile');
+
+        $user->refresh();
+
+        $this->assertSame('@newhandle', $user->social_media['instagram']);
+        $this->assertSame('fb-profile', $user->social_media['facebook']);
+    }
+
     public function test_user_can_delete_their_account(): void
     {
         $user = User::factory()->create();

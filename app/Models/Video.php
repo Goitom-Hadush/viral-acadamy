@@ -23,6 +23,12 @@ class Video extends Model
         return $this->belongsTo(Course::class);
     }
 
+    // Downloadable lesson materials (PDF, ZIP, ...)
+    public function materials()
+    {
+        return $this->hasMany(VideoMaterial::class);
+    }
+
     // RELATIONSHIP 2: A video will have MANY progress records (One for each student who watches it)
     public function progress()
     {

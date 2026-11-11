@@ -29,18 +29,22 @@ class VideoStreamController extends Controller
 
         \Log::info('Video stream attempt', ['video_id' => $video->id, 'user_id' => $user->id, 'user_role' => $user->role]);
 
-        // 2. Check Purchase (The Gatekeeper Logic)
-        $hasPurchased = Purchase::where('user_id', $user->id)
-                                ->where('course_id', $video->course_id)
-                                ->where('status', 'paid')
-                                ->exists();
+        // 2. Check Purchase (Active 6-Month Gatekeeper Logic)
+        $purchase = Purchase::where('user_id', $user->id)
+                            ->where('course_id', $video->course_id)
+                            ->where('status', 'paid')
+                            ->first();
+
+        $hasActiveAccess = $purchase && !$purchase->isExpired();
 
         // Bypass purchase check for Admins, or the Instructor who owns the course
         $isOwnerOrAdmin = ($user->role === 'admin') || 
                           ($user->role === 'instructor' && $video->course->instructor_id === $user->id);
 
-        if (!$hasPurchased && !$isOwnerOrAdmin) {
-            // ACCESS DENIED - They haven't paid!
+        if (!$hasActiveAccess && !$isOwnerOrAdmin) {
+            if ($purchase && $purchase->isExpired()) {
+                abort(403, 'Your 6-month access to this course has expired. Please renew your enrollment.');
+            }
             abort(403, 'Purchase required to access this video.');
         }
 

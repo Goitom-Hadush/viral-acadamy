@@ -26,6 +26,9 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            // Social links edited from the profile page (Telegram, Instagram, ...).
+            'social_media' => ['nullable', 'array'],
+            'social_media.*' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

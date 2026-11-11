@@ -1,10 +1,13 @@
+import FormErrors from '@/Components/FormErrors';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import { useT } from '@/hooks/useT';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
 
 export default function ForgotPassword({ status }) {
+    const t = useT();
     const { data, setData, post, processing, errors } = useForm({
         email: '',
     });
@@ -17,12 +20,13 @@ export default function ForgotPassword({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Forgot Password" />
+            <Head title={t('auth.forgot_title', 'Forgot Password')} />
 
             <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email
-                address and we will email you a password reset link that will
-                allow you to choose a new one.
+                {t(
+                    'auth.forgot_intro',
+                    'Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.',
+                )}
             </div>
 
             {status && (
@@ -32,6 +36,8 @@ export default function ForgotPassword({ status }) {
             )}
 
             <form onSubmit={submit}>
+                <FormErrors errors={errors} />
+
                 <TextInput
                     id="email"
                     type="email"
@@ -46,7 +52,7 @@ export default function ForgotPassword({ status }) {
 
                 <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
+                        {t('auth.email_reset_link', 'Email Password Reset Link')}
                     </PrimaryButton>
                 </div>
             </form>

@@ -1,4 +1,5 @@
 import InstructorLayout from '@/Layouts/InstructorLayout';
+import FormErrors from '@/Components/FormErrors';
 import { useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -14,13 +15,14 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
         category_id: '',
         description: '',
         price: '',
+        price_usd: '',
         thumbnail: null, 
     });
 
     const handleCourseSubmit = (e) => {
         e.preventDefault();
         post(route('instructor.courses.store'), {
-            onSuccess: () => reset('title', 'category_id', 'description', 'price', 'thumbnail'),
+            onSuccess: () => reset('title', 'category_id', 'description', 'price', 'price_usd', 'thumbnail'),
             forceFormData: true, 
         });
     };
@@ -49,18 +51,18 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
     return (
         <InstructorLayout>
             {/* Hero Section */}
-            <div className="mb-8 rounded-3xl hero-gradient p-8 text-white shadow-xl shadow-indigo-500/25 sm:p-10 animate-fade-in">
+            <div className="mb-8 rounded-3xl bg-gradient-to-r from-copper-700 via-accent to-bronze p-6 sm:p-10 text-white shadow-xl shadow-copper-700/25 animate-fade-in">
                 <div className="flex items-center gap-3 mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
                         <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-100">Instructor Studio</p>
+                    <p className="text-sm font-semibold uppercase tracking-[0.3em] text-copper-100">Instructor Studio</p>
                 </div>
-                <h1 className="text-3xl font-black tracking-tight sm:text-4xl">My Courses</h1>
-                <p className="mt-3 max-w-2xl text-lg leading-relaxed text-indigo-100">
-                    Create, organize, and publish modern video courses. You have {courses.length} course{courses.length !== 1 ? 's' : ''}.
+                <h1 className="text-2xl sm:text-4xl font-black tracking-tight">My Courses</h1>
+                <p className="mt-3 max-w-2xl text-sm sm:text-lg leading-relaxed text-copper-100">
+                    Create, organize, and publish modern coaching courses. You have {courses.length} course{courses.length !== 1 ? 's' : ''}.
                 </p>
             </div>
 
@@ -70,6 +72,9 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
             <div className="surface-card mb-8 p-8">
                 <h2 className="mb-6 border-b border-slate-100 pb-3 text-xl font-semibold text-slate-900">Create New Course</h2>
                 <form onSubmit={handleCourseSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="lg:col-span-2">
+                        <FormErrors errors={errors} />
+                    </div>
                     
                     <div>
                         <label className="mb-2 block text-sm font-semibold tracking-wide text-slate-700">Course Title</label>
@@ -112,6 +117,21 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
                     </div>
 
                     <div>
+                        <label className="mb-2 block text-sm font-semibold tracking-wide text-slate-700">Equivalent Price (USD) for diaspora students</label>
+                        <input 
+                            type="number" 
+                            step="0.01" 
+                            min="0"
+                            value={data.price_usd} 
+                            onChange={e => setData('price_usd', e.target.value)} 
+                            className="input-modern"
+                            placeholder="e.g. 25"
+                        />
+                        <p className="mt-1 text-xs text-slate-400">Optional. Shown next to the Birr price, e.g. 800 ETB or $25 USD.</p>
+                        {errors.price_usd && <p className="text-red-500 text-xs mt-2">{errors.price_usd}</p>}
+                    </div>
+
+                    <div>
                         <label className="mb-2 block text-sm font-semibold tracking-wide text-slate-700">Thumbnail Image</label>
                         <input 
                             type="file" 
@@ -151,8 +171,8 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
             <div className="space-y-6 mb-8 animate-slide-up">
                 {courses.length === 0 ? (
                     <div className="surface-card p-12 text-center">
-                        <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-indigo-100">
-                            <svg className="h-10 w-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-full bg-copper-100">
+                            <svg className="h-10 w-10 text-copper-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                         </div>
@@ -213,13 +233,13 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
                                         <div className="space-y-3">
                                             {course.videos.map((video) => (
                                                 <div key={video.id} className="flex items-center gap-4 rounded-2xl bg-slate-50 p-4 transition-colors hover:bg-slate-100">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 font-bold text-indigo-600">
+                                                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-copper-100 font-bold text-copper-800">
                                                         {video.sequence}
                                                     </div>
                                                     <div className="flex-1">
                                                         <p className="font-medium text-slate-900">{video.title}</p>
                                                     </div>
-                                                    <div className="text-indigo-500">
+                                                    <div className="text-copper-700">
                                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -252,6 +272,9 @@ export default function CourseIndex({ categories = [], courses = [], auth }) {
                     </div>
                 ) : (
                     <form onSubmit={handleVideoSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="lg:col-span-2">
+                            <FormErrors errors={videoErrors} />
+                        </div>
                         
                         <div>
                             <label className="mb-2 block text-sm font-semibold tracking-wide text-slate-700">Select Course</label>

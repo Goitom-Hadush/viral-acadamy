@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "5fa238e9-a466-4d25-ad6f-218facc78d8a"
+      }
+    },
+    "android": {
+      "package": "com.segartechsteam.successlifecoachingacademy"
+    }
+  }
+}

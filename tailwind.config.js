@@ -13,21 +13,21 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Copper / Bronze palette tuned to the logo
+                // Success Life logo palette: deep green, fresh green, and clean neutrals
                 copper: {
-                    50: '#fff7f1',
-                    100: '#fcefe2',
-                    200: '#f7d8bb',
-                    300: '#f0bf90',
-                    400: '#e69a53',
-                    500: '#b87333',
-                    600: '#9b5f2b',
-                    700: '#7b481f',
-                    800: '#5a3216',
-                    900: '#3a1d0c',
+                    50: '#f1f8f1',
+                    100: '#e1efe2',
+                    200: '#c3dec5',
+                    300: '#98c49b',
+                    400: '#68a96c',
+                    500: '#36823b',
+                    600: '#17621d',
+                    700: '#004101',
+                    800: '#003501',
+                    900: '#002801',
                 },
-                bronze: '#8c5a2e',
-                accent: '#d19a5a',
+                bronze: '#17621d',
+                accent: '#68a96c',
             },
             fontFamily: {
                 // Use a clean modern sans for body and a refined serif for headings
@@ -35,8 +35,8 @@ export default {
                 heading: ['Merriweather', ...defaultTheme.fontFamily.serif],
             },
             boxShadow: {
-                'copper-glow': '0 10px 40px -12px rgba(184,115,51,0.25)',
-                'copper-glow-lg': '0 20px 70px -30px rgba(184,115,51,0.28)'
+                'copper-glow': '0 10px 40px -12px rgba(0,65,1,0.18)',
+                'copper-glow-lg': '0 20px 70px -30px rgba(0,65,1,0.22)'
             }
         },
     },

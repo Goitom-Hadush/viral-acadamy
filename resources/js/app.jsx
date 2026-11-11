@@ -84,10 +84,13 @@ const ToastContainer = () => {
     );
 };
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Success Life Coaching Academy';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => {
+        if (!title) return appName;
+        return title.includes(appName) ? title : `${title} · ${appName}`;
+    },
     resolve: async (name) => {
         const page = await resolvePageComponent(
             `./Pages/${name}.jsx`,
@@ -105,10 +108,18 @@ createInertiaApp({
         };
     },
     setup({ el, App, props }) {
-        const root = createRoot(el);
-        root.render(<App {...props} />);
+        // Guard against HMR double-mount in development
+        if (el._reactRoot) {
+            el._reactRoot.render(<App {...props} />);
+        } else {
+            el._reactRoot = createRoot(el);
+            el._reactRoot.render(<App {...props} />);
+        }
     },
     progress: {
-        color: '#4F46E5',
+        color: '#004101',
+        delay: 120,
+        includeCSS: true,
+        showSpinner: false,
     },
 });

@@ -40,6 +40,7 @@ class CourseController extends Controller
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'price_usd' => 'nullable|numeric|min:0',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048', // Max 2MB
         ]);
 
@@ -78,4 +79,61 @@ class CourseController extends Controller
 
     return redirect()->back()->with('success', $message);
 }
+
+    // No separate edit page: the instructor edits from the courses list.
+    public function edit(Course $course)
+    {
+        abort_unless($course->instructor_id === auth()->id(), 403);
+
+        return redirect()->route('instructor.courses.index');
+    }
+
+    public function update(Request $request, Course $course)
+    {
+        abort_unless($course->instructor_id === auth()->id(), 403);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'price_usd' => 'nullable|numeric|min:0',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            if ($course->thumbnail && $course->thumbnail !== 'thumbnails/dummy.jpg') {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($course->thumbnail);
+            }
+            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        } else {
+            unset($validated['thumbnail']);
+        }
+
+        $course->update($validated);
+
+        return redirect()->back()->with('success', 'Course updated successfully.');
+    }
+
+    public function destroy(Course $course)
+    {
+        abort_unless($course->instructor_id === auth()->id(), 403);
+
+        $course->load('videos.materials');
+        foreach ($course->videos as $video) {
+            foreach ($video->materials as $material) {
+                \Illuminate\Support\Facades\Storage::disk('private')->delete($material->file_path);
+            }
+            if ($video->video_path) {
+                \Illuminate\Support\Facades\Storage::disk('private')->delete($video->video_path);
+            }
+        }
+        if ($course->thumbnail && $course->thumbnail !== 'thumbnails/dummy.jpg') {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($course->thumbnail);
+        }
+
+        $course->delete();
+
+        return redirect()->route('instructor.courses.index')->with('success', 'Course deleted.');
+    }
 }

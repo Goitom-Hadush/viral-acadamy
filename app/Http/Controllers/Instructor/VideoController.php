@@ -5,54 +5,147 @@ namespace App\Http\Controllers\Instructor;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Video;
+use App\Models\VideoMaterial;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 
 class VideoController extends Controller
 {
+    private const VIDEO_RULE = 'file|mimes:mp4,mov,avi,wmv|max:1048576'; // 1 GB
+
+    public function index(Course $course)
+    {
+        $this->authorizeCourse($course);
+
+        $videos = $course->videos()->with('materials')->get()->map(fn (Video $v) => $this->present($v));
+
+        return Inertia::render('Instructor/Courses/Videos', [
+            'course' => $course->only(['id', 'title', 'status']),
+            'videos' => $videos,
+        ]);
+    }
+
     public function store(Request $request, Course $course)
     {
-        // 1. SECURITY CHECK: Ensure the logged-in user actually owns this course!
-        if ($course->instructor_id !== auth()->id()) {
-            abort(403, 'Unauthorized to upload videos to this course.');
-        }
+        $this->authorizeCourse($course);
 
-        // 2. Quick debug logging: record whether the file arrived and its client-reported metadata
-        try {
-            if ($request->hasFile('video_file')) {
-                $file = $request->file('video_file');
-                \Log::info('Video upload received', [
-                    'original_name' => $file->getClientOriginalName(),
-                    'client_mime' => $file->getClientMimeType(),
-                    'client_extension' => $file->getClientOriginalExtension(),
-                    'size' => $file->getSize(),
-                ]);
-            } else {
-                \Log::info('Video upload: no file present in request');
-            }
-        } catch (\Exception $e) {
-            \Log::error('Video upload logging failed: '.$e->getMessage());
-        }
-
-        // 3. Validate the video file (mp4, mov, avi, max 500MB)
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            // Accept by extension AND common MIME types to avoid client-side/OS MIME quirks
-            'video_file' => 'required|file|mimes:mp4,mov,avi,wmv|mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/x-ms-wmv|max:512000', // 500MB max
+            'video_file' => 'required|'.self::VIDEO_RULE,
             'sequence' => 'required|integer|min:1',
+            'materials' => 'nullable|array',
+            'materials.*' => 'file|max:204800',
         ]);
 
-        // 3. Store securely in the PRIVATE disk
-        // Path will look like: courses/1/video_123456.mp4 inside storage/app/private
-        $filePath = $request->file('video_file')->store("courses/{$course->id}", 'private');
+        $path = $request->file('video_file')->store("courses/{$course->id}", 'private');
 
-        // 4. Create the database record
-        Video::create([
+        $video = Video::create([
             'course_id' => $course->id,
             'title' => $validated['title'],
-            'video_path' => $filePath,
+            'video_path' => $path,
             'sequence' => $validated['sequence'],
         ]);
 
-        return redirect()->back()->with('success', 'Video uploaded securely to the vault!');
+        $this->storeMaterials($request, $video);
+
+        return redirect()->back()->with('success', 'Video uploaded successfully.');
+    }
+
+    public function update(Request $request, Course $course, Video $video)
+    {
+        $this->authorizeVideo($course, $video);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'sequence' => 'required|integer|min:1',
+            'video_file' => 'nullable|'.self::VIDEO_RULE,
+            'materials' => 'nullable|array',
+            'materials.*' => 'file|max:204800',
+        ]);
+
+        $data = ['title' => $validated['title'], 'sequence' => $validated['sequence']];
+
+        if ($request->hasFile('video_file')) {
+            if ($video->video_path) {
+                Storage::disk('private')->delete($video->video_path);
+            }
+            $data['video_path'] = $request->file('video_file')->store("courses/{$course->id}", 'private');
+        }
+
+        $video->update($data);
+        $this->storeMaterials($request, $video);
+
+        return redirect()->back()->with('success', 'Video updated successfully.');
+    }
+
+    public function destroy(Course $course, Video $video)
+    {
+        $this->authorizeVideo($course, $video);
+
+        $video->load('materials');
+        foreach ($video->materials as $material) {
+            Storage::disk('private')->delete($material->file_path);
+        }
+        if ($video->video_path) {
+            Storage::disk('private')->delete($video->video_path);
+        }
+
+        $video->delete();
+
+        return redirect()->back()->with('success', 'Video deleted successfully.');
+    }
+
+    public function destroyMaterial(Course $course, Video $video, VideoMaterial $material)
+    {
+        $this->authorizeVideo($course, $video);
+        abort_unless($material->video_id === $video->id, 404);
+
+        Storage::disk('private')->delete($material->file_path);
+        $material->delete();
+
+        return redirect()->back()->with('success', 'Material removed.');
+    }
+
+    /** An instructor may only manage videos of their own courses. */
+    private function authorizeCourse(Course $course): void
+    {
+        abort_unless($course->instructor_id === auth()->id(), 403, 'You do not own this course.');
+    }
+
+    private function authorizeVideo(Course $course, Video $video): void
+    {
+        $this->authorizeCourse($course);
+        abort_unless($video->course_id === $course->id, 404);
+    }
+
+    private function storeMaterials(Request $request, Video $video): void
+    {
+        foreach ($request->file('materials', []) as $file) {
+            $video->materials()->create([
+                'original_name' => $file->getClientOriginalName(),
+                'file_path' => $file->store("materials/{$video->id}", 'private'),
+                'mime_type' => $file->getClientMimeType(),
+                'file_size' => $file->getSize(),
+            ]);
+        }
+    }
+
+    private function present(Video $video): array
+    {
+        return [
+            'id' => $video->id,
+            'title' => $video->title,
+            'sequence' => $video->sequence,
+            'video_name' => $video->video_path ? basename($video->video_path) : null,
+            'has_video' => (bool) $video->video_path,
+            'stream_url' => route('video.stream', $video->id),
+            'materials' => $video->materials->map(fn (VideoMaterial $m) => [
+                'id' => $m->id,
+                'original_name' => $m->original_name,
+                'file_size' => $m->file_size,
+                'download_url' => route('materials.download', $m->id),
+            ])->values(),
+        ];
     }
 }
