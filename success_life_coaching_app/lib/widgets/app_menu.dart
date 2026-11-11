@@ -183,33 +183,26 @@ class SiteHeader extends StatelessWidget implements PreferredSizeWidget {
           child: SizedBox(
             height: 64,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  InkWell(
-                    onTap: () => router.go('/home'),
-                    borderRadius: BorderRadius.circular(12),
-                    child: const BrandLockup(),
+                  Flexible(
+                    child: InkWell(
+                      onTap: () => router.go('/home'),
+                      borderRadius: BorderRadius.circular(12),
+                      child: const BrandLockup(),
+                    ),
                   ),
-                  const Spacer(),
-                  const _HeaderLangChip(),
                   const SizedBox(width: 8),
+                  const _HeaderLangChip(),
+                  const SizedBox(width: 6),
                   if (auth.isLoggedIn)
                     _UserPill(name: auth.user?.name ?? '')
-                  else ...[
-                    TextButton(
-                      onPressed: () => router.push('/login'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Tw.slate700,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        minimumSize: const Size(0, 38),
-                      ),
-                      child: Text(context.tr('layout.login'),
-                          style: TwText.sans(12,
-                              weight: FontWeight.w600, color: Tw.slate700)),
+                  else
+                    _JoinFreePill(
+                      label: context.tr('layout.login'),
+                      onTap: () => router.push('/login'),
                     ),
-                    _JoinFreePill(onTap: () => router.push('/register')),
-                  ],
                   const SizedBox(width: 6),
                   _SquareIconButton(
                     icon: Icons.menu,
@@ -299,8 +292,9 @@ class _HeaderLangChip extends StatelessWidget {
 }
 
 class _JoinFreePill extends StatelessWidget {
+  final String? label;
   final VoidCallback onTap;
-  const _JoinFreePill({required this.onTap});
+  const _JoinFreePill({this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +304,7 @@ class _JoinFreePill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(999),
         child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
           decoration: BoxDecoration(
             gradient: Tw.brandDeepGradient,
             borderRadius: BorderRadius.circular(999),
@@ -321,7 +315,7 @@ class _JoinFreePill extends StatelessWidget {
                   offset: const Offset(0, 3))
             ],
           ),
-          child: Text(context.tr('layout.join_free'),
+          child: Text(label ?? context.tr('layout.join_free'),
               style: TwText.sans(12,
                   weight: FontWeight.w600, color: Colors.white)),
         ),
